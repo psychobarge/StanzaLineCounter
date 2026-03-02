@@ -4,10 +4,12 @@
 
 VS Code / Cursor extension that displays the line count of each file directly in the Explorer panel.
 
+![StanzaLineCounter screenshot](images/screenshot.png)
+
 ## Features
 
 - **Line count badges** — Each file shows a compact line count badge next to its name.
-- **Threshold alert** — Files exceeding the configured limit are highlighted with a warning color.
+- **Threshold alert** — Files exceeding the configured limit are highlighted with a nice blue color.
 - **Excluded extensions** — Skip files with specific extensions (logs, minified files, maps, images, fonts, archives, media files by default).
 - **Live refresh** — Badges update automatically on file save, creation, deletion, and configuration changes.
 
@@ -24,7 +26,9 @@ The exact line count is always shown in the tooltip on hover.
 
 ## Requirements
 
-- [VS Code](https://code.visualstudio.com/) or [Cursor](https://cursor.sh/) (version 1.74.0 or higher)
+- [VS Code](https://code.visualstudio.com/) 
+- [Cursor](https://cursor.sh/)
+- [Antigravity](https://antigravity.google/) Not tested but it should work on all VS Code based IDEs
 
 ## Installation
 
