@@ -1,0 +1,52 @@
+{
+  "name": "stanza-line-counter",
+  "displayName": "StanzaLineCounter",
+  "description": "Displays the number of lines for each file directly in the Explorer panel.",
+  "version": "0.1.0",
+  "publisher": "mpicard",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "StanzaLineCounter",
+      "properties": {
+        "lineCounter.limit": {
+          "type": "number",
+          "default": 300,
+          "description": "Line count threshold. Files exceeding this limit will have their badge displayed with a warning color."
+        },
+        "lineCounter.excludeExtensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".log",
+            ".min.js",
+            ".map"
+          ],
+          "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map')."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0"
+  }
+}
