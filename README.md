@@ -32,12 +32,31 @@ The exact line count is always shown in the tooltip on hover.
 
 ## Installation
 
+### From the marketplace
+
 1. Open VS Code or Cursor.
 2. Go to **Extensions** (Ctrl+Shift+X / Cmd+Shift+X).
 3. Search for **StanzaLineCounter**.
 4. Click **Install**.
 
-### Manual installation
+### Via VSIX if you cannot see the extension
+
+If the extension does not appear in the marketplace (e.g. in Cursor), install it from a VSIX file:
+
+1. **Generate the VSIX** (from the project root):
+   ```bash
+   npm install
+   npm run compile
+   npx vsce package
+   ```
+   This creates a file like `stanza-line-counter-0.2.0.vsix`.
+
+2. **Install the VSIX** in VS Code or Cursor:
+   - Open the Command Palette (Ctrl+Shift+P / Cmd+Shift+P).
+   - Run **Extensions: Install from VSIX...**.
+   - Select the generated `.vsix` file.
+
+### Manual installation (copy folder)
 
 1. Download the latest release or clone this repository.
 2. Copy the folder to `~/.vscode/extensions/` (or your Cursor extensions directory).
@@ -54,7 +73,7 @@ The exact line count is always shown in the tooltip on hover.
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/StanzaLineCounter.git
+git clone https://github.com/psychobarge/StanzaLineCounter.git
 cd StanzaLineCounter
 
 # Install dependencies
@@ -68,4 +87,4 @@ Press **F5** in VS Code / Cursor to launch the Extension Development Host and te
 
 ## License
 
-MIT © [mpicard](https://github.com/mpicard)
+MIT © [psychobarge](https://github.com/psychobarge)
