@@ -12,7 +12,7 @@ interface CacheEntry {
  *   0–99   → as-is   ("42")
  *   100–999 → Xc      ("3c" ≈ 300)
  *   1 000–9 999 → Xk  ("1k")
- *   10 000+ → XXk     ("15k")
+ *   10 000+ → ∞     (infinity symbol)
  */
 function formatBadge(lineCount: number): string {
     if (lineCount < 100) {
@@ -24,7 +24,7 @@ function formatBadge(lineCount: number): string {
     if (lineCount < 10000) {
         return `${Math.floor(lineCount / 1000)}k`;
     }
-    return `${Math.floor(lineCount / 1000)}k`;
+    return "∞";
 }
 
 export class LineCountDecorationProvider
@@ -57,6 +57,38 @@ export class LineCountDecorationProvider
             ".log",
             ".min.js",
             ".map",
+            // Images
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".webp",
+            ".svg",
+            ".ico",
+            ".bmp",
+            ".tiff",
+            ".tif",
+            ".avif",
+            ".heic",
+            // Fonts
+            ".woff",
+            ".woff2",
+            ".ttf",
+            ".otf",
+            ".eot",
+            // Media / Archives / Binaries
+            ".pdf",
+            ".zip",
+            ".gz",
+            ".tar",
+            ".rar",
+            ".7z",
+            ".mp3",
+            ".mp4",
+            ".webm",
+            ".wav",
+            ".ogg",
+            ".bin",
         ]);
         const limit: number = config.get("limit", 300);
 

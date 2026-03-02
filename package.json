@@ -3,7 +3,11 @@
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
   "version": "0.1.0",
-  "publisher": "mpicard",
+  "publisher": "Psychobarge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/psychobarge/StanzaLineCounter"
+  },
   "license": "MIT",
   "engines": {
     "vscode": "^1.74.0"
@@ -11,6 +15,11 @@
   "categories": [
     "Other"
   ],
+  "icon": "images/stanza_logo.png",
+  "galleryBanner": {
+    "color": "#e8eef4",
+    "theme": "light"
+  },
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -32,9 +41,38 @@
           "default": [
             ".log",
             ".min.js",
-            ".map"
+            ".map",
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".webp",
+            ".svg",
+            ".ico",
+            ".bmp",
+            ".tiff",
+            ".tif",
+            ".avif",
+            ".heic",
+            ".woff",
+            ".woff2",
+            ".ttf",
+            ".otf",
+            ".eot",
+            ".pdf",
+            ".zip",
+            ".gz",
+            ".tar",
+            ".rar",
+            ".7z",
+            ".mp3",
+            ".mp4",
+            ".webm",
+            ".wav",
+            ".ogg",
+            ".bin"
           ],
-          "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map')."
+          "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map', images, fonts, archives, media files)."
         }
       }
     }

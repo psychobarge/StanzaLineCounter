@@ -8,7 +8,7 @@ VS Code / Cursor extension that displays the line count of each file directly in
 
 - **Line count badges** — Each file shows a compact line count badge next to its name.
 - **Threshold alert** — Files exceeding the configured limit are highlighted with a warning color.
-- **Excluded extensions** — Skip files with specific extensions (`.log`, `.min.js`, `.map` by default).
+- **Excluded extensions** — Skip files with specific extensions (logs, minified files, maps, images, fonts, archives, media files by default).
 - **Live refresh** — Badges update automatically on file save, creation, deletion, and configuration changes.
 
 ## Badge format
@@ -18,7 +18,7 @@ VS Code / Cursor extension that displays the line count of each file directly in
 | 0–99        | As-is | `42`           |
 | 100–999     | `Xc`  | `3c` (≈ 300)   |
 | 1,000–9,999 | `Xk`  | `1k`           |
-| 10,000+     | `XXk` | `15k`          |
+| 10,000+     | `∞`   | `∞`            |
 
 The exact line count is always shown in the tooltip on hover.
 
@@ -44,7 +44,7 @@ The exact line count is always shown in the tooltip on hover.
 | Setting                          | Type     | Default                       | Description                                                                 |
 |----------------------------------|----------|-------------------------------|-----------------------------------------------------------------------------|
 | `lineCounter.limit`              | number   | `300`                         | Line threshold — files above this show a warning badge.                     |
-| `lineCounter.excludeExtensions`  | string[] | `[".log", ".min.js", ".map"]` | File extensions to exclude from counting.                                  |
+| `lineCounter.excludeExtensions`  | string[] | `[".log", ".min.js", ".map", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico", ".woff", ".woff2", ".ttf", ".pdf", ".zip", ".gz", ".tar", ".mp3", ".mp4", ".bin"]` | File extensions to exclude from counting. |
 
 ## Development
 
