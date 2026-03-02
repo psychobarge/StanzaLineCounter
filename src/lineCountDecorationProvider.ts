@@ -27,6 +27,32 @@ function formatBadge(lineCount: number): string {
     return "∞";
 }
 
+/**
+ * Converts a string to bold Unicode mathematical characters.
+ * Used to visually emphasize the badge when line count exceeds limit.
+ */
+function toBoldUnicode(str: string): string {
+    const boldMap: Record<string, string> = {
+        "0": "𝟎",
+        "1": "𝟏",
+        "2": "𝟐",
+        "3": "𝟑",
+        "4": "𝟒",
+        "5": "𝟓",
+        "6": "𝟔",
+        "7": "𝟕",
+        "8": "𝟖",
+        "9": "𝟗",
+        "c": "𝐜",
+        "k": "𝐤",
+        "∞": "∞",
+    };
+    return str
+        .split("")
+        .map((char) => boldMap[char] || char)
+        .join("");
+}
+
 export class LineCountDecorationProvider
     implements vscode.FileDecorationProvider {
     private readonly _onDidChangeFileDecorations =
@@ -154,14 +180,17 @@ export class LineCountDecorationProvider
         lineCount: number,
         limit: number
     ): vscode.FileDecoration {
-        const badge = formatBadge(lineCount);
+        const baseBadge = formatBadge(lineCount);
         const tooltip = `${lineCount} lines`;
-        const color =
-            lineCount > limit
-                ? new vscode.ThemeColor("editorWarning.foreground")
-                : undefined;
 
-        return new vscode.FileDecoration(badge, tooltip, color);
+        if (lineCount > limit) {
+            // Blue color for the entire row + bold badge
+            const boldBadge = toBoldUnicode(baseBadge);
+            const color = new vscode.ThemeColor("editorInfo.foreground");
+            return new vscode.FileDecoration(boldBadge, tooltip, color);
+        }
+
+        return new vscode.FileDecoration(baseBadge, tooltip, undefined);
     }
 
     private countLines(content: Uint8Array): number {
