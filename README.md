@@ -32,7 +32,9 @@ Any IDE based on VS Code:
 - [VS Code](https://code.visualstudio.com/) 
 - [Cursor](https://cursor.sh/)
 - [Antigravity](https://antigravity.google/) 
-- Others Windsurf, Trae, etc... Not tested but it should work on all VS Code based IDEs
+- [Windsurf](https://windsurf.com/editor)
+- [Trae](https://www.trae.ai/)
+- Others not tested but it should work on all VS Code based IDEs
 
 ## Installation
 
