@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
@@ -32,6 +32,35 @@
           "type": "number",
           "default": 300,
           "description": "Line count threshold. Files exceeding this limit will have their badge displayed with a warning color."
+        },
+        "lineCounter.limitColor": {
+          "type": "string",
+          "default": "editorInfo.foreground",
+          "enum": [
+            "editorInfo.foreground",
+            "errorForeground",
+            "charts.red",
+            "charts.orange",
+            "charts.yellow",
+            "charts.green",
+            "charts.blue",
+            "charts.purple",
+            "foreground",
+            "descriptionForeground"
+          ],
+          "enumDescriptions": [
+            "Default Blue (Info)",
+            "Error Red",
+            "Red",
+            "Orange",
+            "Yellow",
+            "Green",
+            "Blue",
+            "Purple",
+            "Default Text Foreground",
+            "Subtle Gray (Description)"
+          ],
+          "description": "The color used for files exceeding the line limit. Select a theme color from the dropdown."
         },
         "lineCounter.excludeExtensions": {
           "type": "array",
