@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { formatBadge, toBoldUnicode, countLines } from "./utils";
+import {
+    formatBadge,
+    toBoldUnicode,
+    countLines,
+    shouldExcludePath,
+    isTooLarge,
+    getDecorationSpec,
+} from "./utils";
+
 
 describe("utils", () => {
     describe("formatBadge", () => {
@@ -70,6 +78,96 @@ describe("utils", () => {
         it("should handle empty lines in the middle", () => {
             const content = new TextEncoder().encode("line 1\n\nline 3");
             expect(countLines(content)).toBe(3);
+        });
+        it("should handle CRLF newlines correctly", () => {
+            const content = new TextEncoder().encode("line 1\r\nline 2\r\nline 3");
+            expect(countLines(content)).toBe(3);
+        });
+    });
+
+    describe("shouldExcludePath", () => {
+        const excludeFolders = ["node_modules", ".git"];
+        const excludeExtensions = [".log", ".png"];
+
+        it("should return true if a folder segment matches", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/node_modules/packet/index.js",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+            expect(
+                shouldExcludePath(
+                    "C:\\project\\.git\\config",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+        });
+
+        it("should return true if the extension matches", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/logs/error.log",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+            expect(
+                shouldExcludePath(
+                    "/project/images/logo.png",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+        });
+
+        it("should return false if neither folder nor extension matches", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/src/index.ts",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(false);
+        });
+
+        it("should work with no extensions or folders to exclude", () => {
+            expect(shouldExcludePath("/project/src/index.ts", [], [])).toBe(false);
+        });
+    });
+
+    describe("isTooLarge", () => {
+        it("should return true if size exceeds limit", () => {
+            expect(isTooLarge(11 * 1024 * 1024, 10)).toBe(true);
+        });
+
+        it("should return false if size is within limit", () => {
+            expect(isTooLarge(5 * 1024 * 1024, 10)).toBe(false);
+            expect(isTooLarge(10 * 1024 * 1024, 10)).toBe(false);
+        });
+    });
+
+    describe("getDecorationSpec", () => {
+        it("should return non-bold badge and no limit color when count is under limit", () => {
+            const spec = getDecorationSpec(150, 300);
+            expect(spec.badge).toBe("1c");
+            expect(spec.tooltip).toBe("150 lines");
+            expect(spec.useLimitColor).toBe(false);
+        });
+
+        it("should return bold badge and limit color when count exceeds limit", () => {
+            const spec = getDecorationSpec(350, 300);
+            expect(spec.badge).toBe("𝟑𝐜");
+            expect(spec.tooltip).toBe("350 lines");
+            expect(spec.useLimitColor).toBe(true);
+        });
+
+        it("should handle exact limit as not exceeded", () => {
+            const spec = getDecorationSpec(300, 300);
+            expect(spec.badge).toBe("3c");
+            expect(spec.useLimitColor).toBe(false);
         });
     });
 });
