@@ -1,5 +1,8 @@
 # StanzaLineCounter
 
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/Psychobarge.stanza-line-counter)](https://marketplace.visualstudio.com/items?itemName=Psychobarge.stanza-line-counter)
+[![Build Status](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml)
+[![TypeScript](https://img.shields.io/badge/Language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 VS Code / Cursor extension that displays the line count of each file directly in the Explorer panel.
@@ -81,9 +84,13 @@ npm install
 
 # Compile
 npm run compile   # or npm run watch for watch mode
+
+# Run tests
+npm test          # or npm run test:watch for watch mode
+npm run test:coverage # for coverage report
 ```
 
-Press **F5** in VS Code / Cursor to launch the Extension Development Host and test the extension.
+To test the extension visually, press **F5** in VS Code / Cursor to launch the Extension Development Host.
 
 ## License
 
