@@ -65,3 +65,58 @@ export function countLines(content: Uint8Array): number {
     }
     return count;
 }
+/**
+ * Checks if a file path should be excluded based on folder names or extensions.
+ */
+export function shouldExcludePath(
+    fsPath: string,
+    excludeFolders: string[],
+    excludeExtensions: string[]
+): boolean {
+    // Check excluded folders (by looking at path segments)
+    const folderSegments = fsPath.split(/[\\/]/);
+    if (folderSegments.some((segment) => excludeFolders.includes(segment))) {
+        return true;
+    }
+
+    // Check excluded extensions
+    const ext = fsPath.includes(".")
+        ? fsPath.substring(fsPath.lastIndexOf("."))
+        : "";
+    if (ext && excludeExtensions.includes(ext)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Checks if a file size exceeds the maximum allowed size in MB.
+ */
+export function isTooLarge(sizeInBytes: number, maxFileSizeMB: number): boolean {
+    return sizeInBytes > maxFileSizeMB * 1024 * 1024;
+}
+
+export interface DecorationSpec {
+    badge: string;
+    tooltip: string;
+    useLimitColor: boolean;
+}
+
+/**
+ * Determines the decoration specification based on line count and limit.
+ */
+export function getDecorationSpec(
+    lineCount: number,
+    limit: number
+): DecorationSpec {
+    const baseBadge = formatBadge(lineCount);
+    const tooltip = `${lineCount} lines`;
+    const isExceeded = lineCount > limit;
+
+    return {
+        badge: isExceeded ? toBoldUnicode(baseBadge) : baseBadge,
+        tooltip,
+        useLimitColor: isExceeded,
+    };
+}

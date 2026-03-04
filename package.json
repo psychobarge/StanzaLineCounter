@@ -102,6 +102,31 @@
             ".bin"
           ],
           "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map', images, fonts, archives, media files)."
+        },
+        "lineCounter.excludeFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules",
+            ".git",
+            "vendor",
+            "dist",
+            "out",
+            "target",
+            "bin",
+            ".venv",
+            "venv",
+            "env",
+            ".env"
+          ],
+          "description": "List of folder names to exclude from line counting (e.g. 'node_modules', '.git', 'vendor')."
+        },
+        "lineCounter.maxFileSizeMB": {
+          "type": "number",
+          "default": 10,
+          "description": "Maximum file size in MB. Files larger than this will be skipped to prevent performance issues."
         }
       }
     }

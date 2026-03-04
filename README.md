@@ -14,6 +14,7 @@ VS Code / Cursor extension that displays the line count of each file directly in
 - **Line count badges** — Each file shows a compact line count badge next to its name.
 - **Threshold alert** — Files exceeding the configured limit are highlighted with a customizable color.
 - **Excluded extensions** — Skip files with specific extensions (logs, minified files, maps, images, fonts, archives, media files by default).
+- **Excluded folders** — Skip entire directories like `node_modules`, `.git`, or `vendor` by default, or customize your own.
 - **Live refresh** — Badges update automatically on file save, creation, deletion, and configuration changes.
 
 ## Badge format
@@ -68,7 +69,9 @@ If the extension does not appear in the marketplace, install it from a VSIX file
 |----------------------------------|----------|-------------------------------|-----------------------------------------------------------------------------|
 | `lineCounter.limit`              | number   | `300`                         | Line threshold — files above this show a warning badge.                     |
 | `lineCounter.limitColor`         | string   | `editorInfo.foreground`      | The color used for files exceeding the limit (dropdown choice).      |
+| `lineCounter.maxFileSizeMB`      | number   | `10`                          | Maximum file size in MB. Files larger than this will be ignored.            |
 | `lineCounter.excludeExtensions`  | string[] | `[...]`                      | File extensions to exclude from counting. |
+| `lineCounter.excludeFolders`     | string[] | `[...]`                      | Folder names to exclude from counting (e.g. `node_modules`, `vendor`). |
 
 ## Development
 

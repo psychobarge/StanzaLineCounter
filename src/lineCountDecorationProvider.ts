@@ -1,6 +1,14 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { formatBadge, toBoldUnicode, countLines } from "./utils";
+import {
+    formatBadge,
+    toBoldUnicode,
+    countLines,
+    shouldExcludePath,
+    isTooLarge,
+    getDecorationSpec,
+} from "./utils";
+
 
 interface CacheEntry {
     lineCount: number;
@@ -33,48 +41,26 @@ export class LineCountDecorationProvider
 
         // Read user settings
         const config = vscode.workspace.getConfiguration("lineCounter");
-        const excludeExtensions: string[] = config.get("excludeExtensions", [
-            ".log",
-            ".min.js",
-            ".map",
-            // Images
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".gif",
-            ".webp",
-            ".svg",
-            ".ico",
-            ".bmp",
-            ".tiff",
-            ".tif",
-            ".avif",
-            ".heic",
-            // Fonts
-            ".woff",
-            ".woff2",
-            ".ttf",
-            ".otf",
-            ".eot",
-            // Media / Archives / Binaries
-            ".pdf",
-            ".zip",
-            ".gz",
-            ".tar",
-            ".rar",
-            ".7z",
-            ".mp3",
-            ".mp4",
-            ".webm",
-            ".wav",
-            ".ogg",
-            ".bin",
+        const excludeExtensions: string[] = config.get("excludeExtensions", []);
+        const excludeFolders: string[] = config.get("excludeFolders", [
+            "node_modules",
+            ".git",
+            "vendor",
+            "dist",
+            "out",
+            "target",
+            "bin",
+            ".venv",
+            "venv",
+            "env",
+            ".env",
         ]);
         const limit: number = config.get("limit", 300);
         const limitColor: string = config.get("limitColor", "editorInfo.foreground");
+        const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
 
-        // Check excluded extensions
-        if (ext && excludeExtensions.includes(ext)) {
+        // Check for exclusions (folders or extensions)
+        if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
             return undefined;
         }
 
@@ -88,6 +74,11 @@ export class LineCountDecorationProvider
 
         // Skip directories and other non-file entries
         if (stat.type !== vscode.FileType.File) {
+            return undefined;
+        }
+
+        // Skip large files (to prevent performance issues/crashes)
+        if (isTooLarge(stat.size, maxFileSizeMB)) {
             return undefined;
         }
 
@@ -136,17 +127,12 @@ export class LineCountDecorationProvider
         limit: number,
         limitColor: string
     ): vscode.FileDecoration {
-        const baseBadge = formatBadge(lineCount);
-        const tooltip = `${lineCount} lines`;
+        const spec = getDecorationSpec(lineCount, limit);
+        const color = spec.useLimitColor
+            ? new vscode.ThemeColor(limitColor)
+            : undefined;
 
-        if (lineCount > limit) {
-            // Use configured color + bold badge
-            const boldBadge = toBoldUnicode(baseBadge);
-            const color = new vscode.ThemeColor(limitColor);
-            return new vscode.FileDecoration(boldBadge, tooltip, color);
-        }
-
-        return new vscode.FileDecoration(baseBadge, tooltip, undefined);
+        return new vscode.FileDecoration(spec.badge, spec.tooltip, color);
     }
 }
 
