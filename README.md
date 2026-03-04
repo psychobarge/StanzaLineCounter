@@ -28,10 +28,11 @@ VS Code / Cursor extension that displays the line count of each file directly in
 The exact line count is always shown in the tooltip on hover.
 
 ## Requirements
-
+Any IDE based on VS Code:
 - [VS Code](https://code.visualstudio.com/) 
 - [Cursor](https://cursor.sh/)
-- [Antigravity](https://antigravity.google/) Not tested but it should work on all VS Code based IDEs
+- [Antigravity](https://antigravity.google/) 
+- Others Windsurf, Trae, etc... Not tested but it should work on all VS Code based IDEs
 
 ## Installation
 
@@ -44,7 +45,7 @@ The exact line count is always shown in the tooltip on hover.
 
 ### Via VSIX if you cannot see the extension
 
-If the extension does not appear in the marketplace (e.g. in Cursor), install it from a VSIX file:
+If the extension does not appear in the marketplace, install it from a VSIX file:
 
 1. **Generate the VSIX** (from the project root):
    ```bash
@@ -54,16 +55,10 @@ If the extension does not appear in the marketplace (e.g. in Cursor), install it
    ```
    This creates a file like `stanza-line-counter-0.2.0.vsix`.
 
-2. **Install the VSIX** in VS Code or Cursor:
+2. **Install the VSIX** :
    - Open the Command Palette (Ctrl+Shift+P / Cmd+Shift+P).
    - Run **Extensions: Install from VSIX...**.
    - Select the generated `.vsix` file.
-
-### Manual installation (copy folder)
-
-1. Download the latest release or clone this repository.
-2. Copy the folder to `~/.vscode/extensions/` (or your Cursor extensions directory).
-3. Restart the editor.
 
 ## Configuration
 
