@@ -71,6 +71,7 @@ export class LineCountDecorationProvider
             ".bin",
         ]);
         const limit: number = config.get("limit", 300);
+        const limitColor: string = config.get("limitColor", "editorInfo.foreground");
 
         // Check excluded extensions
         if (ext && excludeExtensions.includes(ext)) {
@@ -93,7 +94,7 @@ export class LineCountDecorationProvider
         // Check cache
         const cached = this.cache.get(uri.fsPath);
         if (cached && cached.mtimeMs === stat.mtime) {
-            return this.buildDecoration(cached.lineCount, limit);
+            return this.buildDecoration(cached.lineCount, limit, limitColor);
         }
 
         // Read file and count lines
@@ -108,7 +109,7 @@ export class LineCountDecorationProvider
         // Update cache
         this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
 
-        return this.buildDecoration(lineCount, limit);
+        return this.buildDecoration(lineCount, limit, limitColor);
     }
 
     /** Refresh decoration for a specific URI (e.g. after file save). */
@@ -132,15 +133,16 @@ export class LineCountDecorationProvider
 
     private buildDecoration(
         lineCount: number,
-        limit: number
+        limit: number,
+        limitColor: string
     ): vscode.FileDecoration {
         const baseBadge = formatBadge(lineCount);
         const tooltip = `${lineCount} lines`;
 
         if (lineCount > limit) {
-            // Blue color for the entire row + bold badge
+            // Use configured color + bold badge
             const boldBadge = toBoldUnicode(baseBadge);
-            const color = new vscode.ThemeColor("editorInfo.foreground");
+            const color = new vscode.ThemeColor(limitColor);
             return new vscode.FileDecoration(boldBadge, tooltip, color);
         }
 
