@@ -108,11 +108,28 @@ export interface DecorationSpec {
  */
 export function getDecorationSpec(
     lineCount: number,
-    limit: number
+    limit: number,
+    useSmileys: boolean = false
 ): DecorationSpec {
+    const isExceeded = lineCount > limit;
+    const isNearLimit = lineCount >= limit * 0.9;
+
+    if (useSmileys) {
+        let badge = "😎"; // Well below limit
+        if (isExceeded) {
+            badge = "😡"; // Exceeded
+        } else if (isNearLimit) {
+            badge = "😬"; // Near limit (90%+)
+        }
+        return {
+            badge,
+            tooltip: `${lineCount} lines`,
+            useLimitColor: isExceeded,
+        };
+    }
+
     const baseBadge = formatBadge(lineCount);
     const tooltip = `${lineCount} lines`;
-    const isExceeded = lineCount > limit;
 
     return {
         badge: isExceeded ? toBoldUnicode(baseBadge) : baseBadge,

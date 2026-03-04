@@ -58,6 +58,7 @@ export class LineCountDecorationProvider
         const limit: number = config.get("limit", 300);
         const limitColor: string = config.get("limitColor", "editorInfo.foreground");
         const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
+        const useSmileys: boolean = config.get("useSmileys", false);
 
         // Check for exclusions (folders or extensions)
         if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
@@ -85,7 +86,7 @@ export class LineCountDecorationProvider
         // Check cache
         const cached = this.cache.get(uri.fsPath);
         if (cached && cached.mtimeMs === stat.mtime) {
-            return this.buildDecoration(cached.lineCount, limit, limitColor);
+            return this.buildDecoration(cached.lineCount, limit, limitColor, useSmileys);
         }
 
         // Read file and count lines
@@ -100,7 +101,7 @@ export class LineCountDecorationProvider
         // Update cache
         this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
 
-        return this.buildDecoration(lineCount, limit, limitColor);
+        return this.buildDecoration(lineCount, limit, limitColor, useSmileys);
     }
 
     /** Refresh decoration for a specific URI (e.g. after file save). */
@@ -125,9 +126,10 @@ export class LineCountDecorationProvider
     private buildDecoration(
         lineCount: number,
         limit: number,
-        limitColor: string
+        limitColor: string,
+        useSmileys: boolean
     ): vscode.FileDecoration {
-        const spec = getDecorationSpec(lineCount, limit);
+        const spec = getDecorationSpec(lineCount, limit, useSmileys);
         const color = spec.useLimitColor
             ? new vscode.ThemeColor(limitColor)
             : undefined;

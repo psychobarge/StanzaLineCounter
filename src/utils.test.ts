@@ -169,5 +169,29 @@ describe("utils", () => {
             expect(spec.badge).toBe("3c");
             expect(spec.useLimitColor).toBe(false);
         });
+
+        describe("with useSmileys = true", () => {
+            it("should return 😎 when well below limit (< 90%)", () => {
+                const spec = getDecorationSpec(260, 300, true);
+                expect(spec.badge).toBe("😎");
+                expect(spec.useLimitColor).toBe(false);
+            });
+
+            it("should return 😬 when near limit (>= 90% and <= 100%)", () => {
+                const spec1 = getDecorationSpec(270, 300, true); // exactly 90%
+                expect(spec1.badge).toBe("😬");
+                expect(spec1.useLimitColor).toBe(false);
+
+                const spec2 = getDecorationSpec(300, 300, true); // exactly 100%
+                expect(spec2.badge).toBe("😬");
+                expect(spec2.useLimitColor).toBe(false);
+            });
+
+            it("should return 😡 when limit is exceeded (> 100%)", () => {
+                const spec = getDecorationSpec(301, 300, true);
+                expect(spec.badge).toBe("😡");
+                expect(spec.useLimitColor).toBe(true);
+            });
+        });
     });
 });

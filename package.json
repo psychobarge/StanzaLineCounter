@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
@@ -128,6 +128,11 @@
           "type": "number",
           "default": 10,
           "description": "Maximum file size in MB. Files larger than this will be skipped to prevent performance issues."
+        },
+        "lineCounter.useSmileys": {
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, replaces the line count badge with a smiley based on the limit threshold (😎 for low, 😬 for near limit, 😡 for exceeded)."
         }
       }
     }
