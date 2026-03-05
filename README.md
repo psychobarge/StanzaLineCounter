@@ -4,6 +4,7 @@
 [![Build Status](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml)
 [![TypeScript](https://img.shields.io/badge/Language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Changelog](https://img.shields.io/badge/Changelog-blue)](CHANGELOG.md)
 
 VS Code / Cursor extension that displays the line count of each file directly in the Explorer panel.
 
