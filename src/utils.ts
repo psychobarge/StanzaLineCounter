@@ -73,9 +73,21 @@ export function shouldExcludePath(
     excludeFolders: string[],
     excludeExtensions: string[]
 ): boolean {
-    // Check excluded folders (by looking at path segments)
-    const folderSegments = fsPath.split(/[\\/]/);
-    if (folderSegments.some((segment) => excludeFolders.includes(segment))) {
+    const normalizedPath = fsPath.replace(/\\/g, "/");
+    const segments = normalizedPath.split("/");
+
+    // Check if any segment matches (folder names) or if the whole path ends with an excluded path (relative files)
+    if (
+        excludeFolders.some((exclude) => {
+            const normalizedExclude = exclude.replace(/\\/g, "/");
+            // If it's a simple name, check segments
+            if (!normalizedExclude.includes("/")) {
+                return segments.includes(normalizedExclude);
+            }
+            // If it's a relative path, check if normalizedPath ends with it
+            return normalizedPath.endsWith(normalizedExclude);
+        })
+    ) {
         return true;
     }
 

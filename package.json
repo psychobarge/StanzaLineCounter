@@ -122,7 +122,7 @@
             "env",
             ".env"
           ],
-          "description": "List of folder names to exclude from line counting (e.g. 'node_modules', '.git', 'vendor')."
+          "description": "List of folder names, file names, or relative paths to exclude from line counting (e.g. 'node_modules', '.git', 'src/generated.ts')."
         },
         "lineCounter.maxFileSizeMB": {
           "type": "number",
@@ -135,6 +135,20 @@
           "description": "If enabled, replaces the line count badge with a smiley based on the limit threshold (😎 for low, 😬 for near limit, 😡 for exceeded)."
         }
       }
+    },
+    "commands": [
+      {
+        "command": "lineCounter.addToIgnoreList",
+        "title": "Stanza: Ignore this file/folder"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "lineCounter.addToIgnoreList",
+          "group": "modification"
+        }
+      ]
     }
   },
   "scripts": {

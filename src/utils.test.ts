@@ -133,6 +133,26 @@ describe("utils", () => {
             ).toBe(false);
         });
 
+        it("should return true if a specific file name matches", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/src/secret.txt",
+                    ["secret.txt"],
+                    []
+                )
+            ).toBe(true);
+        });
+
+        it("should return true if a relative path matches", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/src/generated/api.ts",
+                    ["src/generated/api.ts"],
+                    []
+                )
+            ).toBe(true);
+        });
+
         it("should work with no extensions or folders to exclude", () => {
             expect(shouldExcludePath("/project/src/index.ts", [], [])).toBe(false);
         });
