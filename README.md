@@ -13,11 +13,15 @@ VS Code / Cursor extension that displays the line count of each file directly in
 ## Features
 
 - **Line count badges** — Each file shows a compact line count badge next to its name.
+- **Folder warning tags** — Folders containing files that exceed the line limit display a warning badge (⚠).
 - **Ignore files/folders** — Easily exclude files or folders directly from the Explorer via right-click > **Stanza: Ignore this file/folder**.
 - **Threshold alert** — Files exceeding the configured limit are highlighted with a customizable color.
-- **Excluded extensions** — Skip files with specific extensions (logs, minified files, maps, images, fonts, archives, media files by default).
+- **Excluded extensions** — Skip files by extension (logs, images, media, etc.).
 - **Excluded paths** — Skip entire directories or specific files by name/relative path.
-- **Live refresh** — Badges update automatically on file save, creation, deletion, and configuration changes.
+- **Live refresh** — Badges update automatically on file changes or configuration updates.
+- **Emoji badges** — Option to use smileys (😎, 😬, 😡) based on thresholds.
+- **Performance optimizations** — Streaming, caching, and background workspace scanning to ensure a smooth UI.
+
 
 ## Badge format
 
@@ -70,10 +74,22 @@ If the extension does not appear in the marketplace, install it from a VSIX file
 | Setting                          | Type     | Default                       | Description                                                                 |
 |----------------------------------|----------|-------------------------------|-----------------------------------------------------------------------------|
 | `lineCounter.limit`              | number   | `300`                         | Line threshold — files above this show a warning badge.                     |
-| `lineCounter.limitColor`         | string   | `editorInfo.foreground`      | The color used for files exceeding the limit (dropdown choice).      |
-| `lineCounter.maxFileSizeMB`      | number   | `10`                          | Maximum file size in MB. Files larger than this will be ignored.            |
+| `lineCounter.limitColor`         | string   | `editorInfo.foreground`      | The color used for files exceeding the limit.      |
+| `lineCounter.maxFileSizeMB`      | number   | `10`                          | Maximum file size (MB) to ignore to preserve memory.            |
 | `lineCounter.excludeExtensions`  | string[] | `[...]`                      | File extensions to exclude from counting. |
-| `lineCounter.excludeFolders`     | string[] | `[...]`                      | Folder names, file names, or relative paths to exclude (e.g. `node_modules`, `src/gen.ts`). |
+| `lineCounter.excludeFolders`     | string[] | `[...]`                      | Folders or specific paths to exclude (e.g. `node_modules`, `src/gen.ts`). |
+| `lineCounter.useSmileys`          | boolean  | `false`                       | Use emojis instead of numbers (😎 below 90%, 😬 near limit, 😡 exceeded).                      |
+| `lineCounter.showFolderBadges`    | boolean  | `true`                        | Display warning tags on folders containing exceeded files. |
+| `lineCounter.enableWorkspaceWarmUp` | boolean  | `false`                       | Background scan at startup to find exceeded files in the entire workspace. (Recommended for large projects with folder badges enabled) |
+
+## Performance
+
+StanzaLineCounter is designed to be lightweight even on large projects:
+- **Streaming**: For local files, we use Node streams to count lines without loading the whole file into RAM.
+- **Intelligent Caching**: Results are cached and only re-calculated if the file modification time changes.
+- **Non-blocking Warmup**: The workspace scan runs in chunks and yields to the event loop, ensuring your IDE remains responsive.
+- **Path-based lookups**: Folder badges are calculated from a flat list of known exceeded files, avoiding expensive recursion during Explorer renders.
+
 
 ## Development
 
