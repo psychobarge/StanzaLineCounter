@@ -10,6 +10,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.window.registerFileDecorationProvider(provider)
     );
 
+    // Warm up workspace to eagerly show folder decorations
+    provider.warmUpWorkspace();
+
     // Refresh decorations when a file is saved
     context.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument((document) => {

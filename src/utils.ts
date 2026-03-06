@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 /**
  * Formats a line count into a short badge string (max 2 chars).
  *
@@ -64,6 +66,49 @@ export function countLines(content: Uint8Array): number {
         count--;
     }
     return count;
+}
+
+/**
+ * Counts the number of lines in a file using a read stream.
+ * This prevents loading the entire file into memory at once.
+ */
+export function countLinesStream(fsPath: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+        let count = 1; // At least one line if file is non-empty
+        const stream = fs.createReadStream(fsPath);
+        let lastCharWasNewline = false;
+        let fileIsEmpty = true;
+
+        stream.on("data", (chunk: Buffer) => {
+            if (chunk.length > 0) {
+                fileIsEmpty = false;
+            }
+            for (let i = 0; i < chunk.length; i++) {
+                if (chunk[i] === 0x0a) {
+                    count++;
+                }
+            }
+            if (chunk.length > 0) {
+                lastCharWasNewline = chunk[chunk.length - 1] === 0x0a;
+            }
+        });
+
+        stream.on("end", () => {
+            if (fileIsEmpty) {
+                resolve(0);
+                return;
+            }
+            // If the file ends with a newline, don't count the trailing empty "line"
+            if (lastCharWasNewline) {
+                count--;
+            }
+            resolve(count);
+        });
+
+        stream.on("error", (err) => {
+            reject(err);
+        });
+    });
 }
 /**
  * Checks if a file path should be excluded based on folder names or extensions.

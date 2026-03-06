@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
@@ -133,6 +133,16 @@
           "type": "boolean",
           "default": false,
           "description": "If enabled, replaces the line count badge with a smiley based on the limit threshold (😎 for low, 😬 for near limit, 😡 for exceeded)."
+        },
+        "lineCounter.showFolderBadges": {
+          "type": "boolean",
+          "default": true,
+          "description": "If enabled, folders containing files that exceed the line limit will display a warning badge. If 'Global Warmup' is not enabled, folder badges will only load when the files inside are opened."
+        },
+        "lineCounter.enableWorkspaceWarmUp": {
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, the extension will proactively scan the workspace at startup to display badges on folders. If disabled (default for performance), badges will only appear on folders once their contents are loaded in the Explorer."
         }
       }
     },
