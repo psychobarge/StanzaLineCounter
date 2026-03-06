@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Performance: Intelligent caching**: Improved caching mechanism with automatic invalidation on file changes to avoid redundant calculations.
 - **Configuration**: `lineCounter.showFolderBadges` to toggle folder warnings.
 - **Configuration**: Reorganized settings for better clarity and updated descriptions explaining dependencies between folder badges and workspace warmup.
+- **Code Quality**: Introduced `ESLint v10` and `typescript-eslint` for improved code maintenance and catch potential issues early.
 
 ## [0.5.0] - 2026-03-05
 
