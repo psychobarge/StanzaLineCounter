@@ -9,6 +9,7 @@
 VS Code / Cursor extension that displays the line count of each file directly in the Explorer panel.
 
 ![StanzaLineCounter screenshot](images/screenshot.png)
+![StanzaLineCounter screenshot](images/screenshot2.png)
 
 ## Features
 
@@ -19,7 +20,6 @@ VS Code / Cursor extension that displays the line count of each file directly in
 - **Excluded extensions** — Skip files by extension (logs, images, media, etc.).
 - **Excluded paths** — Skip entire directories or specific files by name/relative path.
 - **Live refresh** — Badges update automatically on file changes or configuration updates.
-- **Emoji badges** — Option to use smileys (😎, 😬, 😡) based on thresholds.
 - **Performance optimizations** — Streaming, caching, and background workspace scanning to ensure a smooth UI.
 
 
