@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
