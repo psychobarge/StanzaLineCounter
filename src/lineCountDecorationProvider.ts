@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import {
-    formatBadge,
-    toBoldUnicode,
     countLines,
     countLinesStream,
     shouldExcludePath,
@@ -31,8 +29,7 @@ export class LineCountDecorationProvider
     // ─── Public API ─────────────────────────────────────────────
 
     async provideFileDecoration(
-        uri: vscode.Uri,
-        _token: vscode.CancellationToken
+        uri: vscode.Uri
     ): Promise<vscode.FileDecoration | undefined> {
         // Read user settings
         const config = vscode.workspace.getConfiguration("lineCounter");
@@ -68,8 +65,6 @@ export class LineCountDecorationProvider
         if (stat.type !== vscode.FileType.File) {
             return undefined;
         }
-
-        const ext = path.extname(uri.fsPath);
 
         const excludeExtensions: string[] = config.get("excludeExtensions", []);
         const excludeFolders: string[] = config.get("excludeFolders", [
