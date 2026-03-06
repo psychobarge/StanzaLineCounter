@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-03-06
+
+### Modified
+- **chore: Readme**: Bump version to 0.6.2 folowing deploy error.
+
+## [0.6.1] - 2026-03-06
+
+### Modified
+- **chore: Readme**: Updated README.md with screenshots.
+
 ## [0.6.0] - 2026-03-06
 
 ### Added
