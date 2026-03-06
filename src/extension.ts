@@ -53,13 +53,10 @@ export function activate(context: vscode.ExtensionContext): void {
             const excludeFolders: string[] = config.get("excludeFolders", []);
 
             // Get path relative to workspace root if possible
-            let pathToAdd = uri.fsPath;
             const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-            if (workspaceFolder) {
-                pathToAdd = path.relative(workspaceFolder.uri.fsPath, uri.fsPath);
-            } else {
-                pathToAdd = path.basename(uri.fsPath);
-            }
+            const pathToAdd = workspaceFolder
+                ? path.relative(workspaceFolder.uri.fsPath, uri.fsPath)
+                : path.basename(uri.fsPath);
 
             if (!excludeFolders.includes(pathToAdd)) {
                 const updatedExcludes = [...excludeFolders, pathToAdd];
