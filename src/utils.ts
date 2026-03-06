@@ -21,31 +21,6 @@ export function formatBadge(lineCount: number): string {
     return "∞";
 }
 
-/**
- * Converts a string to bold Unicode mathematical characters.
- * Used to visually emphasize the badge when line count exceeds limit.
- */
-export function toBoldUnicode(str: string): string {
-    const boldMap: Record<string, string> = {
-        "0": "𝟎",
-        "1": "𝟏",
-        "2": "𝟐",
-        "3": "𝟑",
-        "4": "𝟒",
-        "5": "𝟓",
-        "6": "𝟔",
-        "7": "𝟕",
-        "8": "𝟖",
-        "9": "𝟗",
-        "c": "𝐜",
-        "k": "𝐤",
-        "∞": "∞",
-    };
-    return str
-        .split("")
-        .map((char) => boldMap[char] || char)
-        .join("");
-}
 
 /**
  * Counts the number of lines in a buffer.
@@ -189,7 +164,7 @@ export function getDecorationSpec(
     const tooltip = `${lineCount} lines`;
 
     return {
-        badge: isExceeded ? toBoldUnicode(baseBadge) : baseBadge,
+        badge: baseBadge,
         tooltip,
         useLimitColor: isExceeded,
     };

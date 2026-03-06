@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
     formatBadge,
-    toBoldUnicode,
     countLines,
     shouldExcludePath,
     isTooLarge,
@@ -35,24 +34,6 @@ describe("utils", () => {
         });
     });
 
-    describe("toBoldUnicode", () => {
-        it("should convert digits to bold mathematical characters", () => {
-            expect(toBoldUnicode("0123456789")).toBe("𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗");
-        });
-
-        it("should convert special characters 'c', 'k', and '∞'", () => {
-            expect(toBoldUnicode("ck∞")).toBe("𝐜𝐤∞");
-        });
-
-        it("should leave other characters unchanged", () => {
-            expect(toBoldUnicode("abxz!")).toBe("abxz!");
-        });
-
-        it("should handle combinations", () => {
-            expect(toBoldUnicode("42c")).toBe("𝟒𝟐𝐜");
-            expect(toBoldUnicode("1k")).toBe("𝟏𝐤");
-        });
-    });
 
     describe("countLines", () => {
         it("should return 0 for empty content", () => {
@@ -177,9 +158,9 @@ describe("utils", () => {
             expect(spec.useLimitColor).toBe(false);
         });
 
-        it("should return bold badge and limit color when count exceeds limit", () => {
+        it("should return non-bold badge and limit color when count exceeds limit", () => {
             const spec = getDecorationSpec(350, 300);
-            expect(spec.badge).toBe("𝟑𝐜");
+            expect(spec.badge).toBe("3c");
             expect(spec.tooltip).toBe("350 lines");
             expect(spec.useLimitColor).toBe(true);
         });
