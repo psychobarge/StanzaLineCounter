@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { LineCountDecorationProvider } from "./lineCountDecorationProvider";
+import { getPathExtension } from "./utils";
 
 export function activate(context: vscode.ExtensionContext): void {
     const provider = new LineCountDecorationProvider();
@@ -65,6 +66,43 @@ export function activate(context: vscode.ExtensionContext): void {
             } else {
                 vscode.window.showInformationMessage(`'${pathToAdd}' is already in the ignore list.`);
             }
+        })
+    );
+
+    // Register the addExtensionToIgnoreList command
+    context.subscriptions.push(
+        vscode.commands.registerCommand("lineCounter.addExtensionToIgnoreList", async (uri: vscode.Uri) => {
+            if (!uri || uri.scheme !== "file") {
+                return;
+            }
+
+            const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
+            if (!fileExtension) {
+                return;
+            }
+
+            const config = vscode.workspace.getConfiguration("lineCounter");
+            const excludeExtensions: string[] = config.get("excludeExtensions", []);
+            const alreadyIgnored = excludeExtensions.some(
+                (extension) => extension.toLowerCase() === fileExtension
+            );
+
+            if (alreadyIgnored) {
+                vscode.window.showInformationMessage(
+                    `'${fileExtension}' is already in the extension ignore list.`
+                );
+                return;
+            }
+
+            const updatedExcludeExtensions = [...excludeExtensions, fileExtension];
+            await config.update(
+                "excludeExtensions",
+                updatedExcludeExtensions,
+                vscode.ConfigurationTarget.Global
+            );
+            vscode.window.showInformationMessage(
+                `Added '${fileExtension}' to Stanza extension ignore list.`
+            );
         })
     );
 
