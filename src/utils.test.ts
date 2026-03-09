@@ -120,6 +120,23 @@ describe("utils", () => {
             ).toBe(true);
         });
 
+        it("should match extensions case-insensitively", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/images/PHOTO.PNG",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+            expect(
+                shouldExcludePath(
+                    "/project/images/photo.png",
+                    excludeFolders,
+                    [".PNG"]
+                )
+            ).toBe(true);
+        });
+
         it("should return false if neither folder nor extension matches", () => {
             expect(
                 shouldExcludePath(

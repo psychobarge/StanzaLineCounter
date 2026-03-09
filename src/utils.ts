@@ -120,9 +120,14 @@ export function shouldExcludePath(
         return true;
     }
 
-    // Check excluded extensions
-    const ext = getPathExtension(fsPath);
-    if (ext && excludeExtensions.includes(ext)) {
+    // Check excluded extensions (case-insensitive)
+    const ext = getPathExtension(fsPath).toLowerCase();
+    if (
+        ext &&
+        excludeExtensions.some(
+            (excludeExtension) => excludeExtension.toLowerCase() === ext
+        )
+    ) {
         return true;
     }
 
