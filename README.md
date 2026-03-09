@@ -11,6 +11,10 @@ VS Code / Cursor extension that displays the line count of each file directly in
 ![StanzaLineCounter screenshot](images/screenshot.png)
 ![StanzaLineCounter screenshot](images/screenshot2.png)
 
+## Disclaimer
+
+This extension was developed with the assistance of an AI coding tool. That said, it was **not** vibe-coded — every feature, design decision, and line of code was deliberately thought through and reviewed by a human developer.
+
 ## Features
 
 - **Line count badges** — Each file shows a compact line count badge next to its name.
