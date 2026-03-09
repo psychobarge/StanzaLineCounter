@@ -16,6 +16,7 @@ VS Code / Cursor extension that displays the line count of each file directly in
 - **Line count badges** — Each file shows a compact line count badge next to its name.
 - **Folder warning tags** — Folders containing files that exceed the line limit display a warning badge (⚠).
 - **Ignore files/folders** — Easily exclude files or folders directly from the Explorer via right-click > **Stanza: Ignore this file/folder**.
+- **Ignore extensions from Explorer** — Right-click a file to add its extension to ignored extensions via **Stanza : Add file extension to ignore list** (shown only when the extension is not already excluded).
 - **Threshold alert** — Files exceeding the configured limit are highlighted with a customizable color.
 - **Excluded extensions** — Skip files by extension (logs, images, media, etc.).
 - **Excluded paths** — Skip entire directories or specific files by name/relative path.

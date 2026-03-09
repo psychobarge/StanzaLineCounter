@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
     formatBadge,
     countLines,
+    getPathExtension,
     shouldExcludePath,
     isTooLarge,
     getDecorationSpec,
@@ -66,6 +67,21 @@ describe("utils", () => {
         });
     });
 
+    describe("getPathExtension", () => {
+        it("should return the extension for files with extension", () => {
+            expect(getPathExtension("/project/src/index.ts")).toBe(".ts");
+            expect(getPathExtension("/project/assets/logo.png")).toBe(".png");
+        });
+
+        it("should return empty string for files without extension", () => {
+            expect(getPathExtension("/project/README")).toBe("");
+        });
+
+        it("should handle dotfiles like .gitignore", () => {
+            expect(getPathExtension("/project/.gitignore")).toBe(".gitignore");
+        });
+    });
+
     describe("shouldExcludePath", () => {
         const excludeFolders = ["node_modules", ".git"];
         const excludeExtensions = [".log", ".png"];
@@ -100,6 +116,23 @@ describe("utils", () => {
                     "/project/images/logo.png",
                     excludeFolders,
                     excludeExtensions
+                )
+            ).toBe(true);
+        });
+
+        it("should match extensions case-insensitively", () => {
+            expect(
+                shouldExcludePath(
+                    "/project/images/PHOTO.PNG",
+                    excludeFolders,
+                    excludeExtensions
+                )
+            ).toBe(true);
+            expect(
+                shouldExcludePath(
+                    "/project/images/photo.png",
+                    excludeFolders,
+                    [".PNG"]
                 )
             ).toBe(true);
         });

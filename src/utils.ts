@@ -85,6 +85,15 @@ export function countLinesStream(fsPath: string): Promise<number> {
         });
     });
 }
+
+/**
+ * Extracts the extension used by lineCounter.excludeExtensions.
+ */
+export function getPathExtension(fsPath: string): string {
+    return fsPath.includes(".")
+        ? fsPath.substring(fsPath.lastIndexOf("."))
+        : "";
+}
 /**
  * Checks if a file path should be excluded based on folder names or extensions.
  */
@@ -111,11 +120,14 @@ export function shouldExcludePath(
         return true;
     }
 
-    // Check excluded extensions
-    const ext = fsPath.includes(".")
-        ? fsPath.substring(fsPath.lastIndexOf("."))
-        : "";
-    if (ext && excludeExtensions.includes(ext)) {
+    // Check excluded extensions (case-insensitive)
+    const ext = getPathExtension(fsPath).toLowerCase();
+    if (
+        ext &&
+        excludeExtensions.some(
+            (excludeExtension) => excludeExtension.toLowerCase() === ext
+        )
+    ) {
         return true;
     }
 
