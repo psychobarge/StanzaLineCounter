@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
@@ -150,6 +150,10 @@
       {
         "command": "lineCounter.addToIgnoreList",
         "title": "Stanza: Ignore this file/folder"
+      },
+      {
+        "command": "lineCounter.addExtensionToIgnoreList",
+        "title": "Stanza : Add file extension to ignore list"
       }
     ],
     "menus": {
@@ -157,6 +161,11 @@
         {
           "command": "lineCounter.addToIgnoreList",
           "group": "modification"
+        },
+        {
+          "command": "lineCounter.addExtensionToIgnoreList",
+          "group": "modification",
+          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname not in config.lineCounter.excludeExtensions"
         }
       ]
     }
