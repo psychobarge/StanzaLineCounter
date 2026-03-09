@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
     formatBadge,
     countLines,
+    getPathExtension,
     shouldExcludePath,
     isTooLarge,
     getDecorationSpec,
@@ -63,6 +64,21 @@ describe("utils", () => {
         it("should handle CRLF newlines correctly", () => {
             const content = new TextEncoder().encode("line 1\r\nline 2\r\nline 3");
             expect(countLines(content)).toBe(3);
+        });
+    });
+
+    describe("getPathExtension", () => {
+        it("should return the extension for files with extension", () => {
+            expect(getPathExtension("/project/src/index.ts")).toBe(".ts");
+            expect(getPathExtension("/project/assets/logo.png")).toBe(".png");
+        });
+
+        it("should return empty string for files without extension", () => {
+            expect(getPathExtension("/project/README")).toBe("");
+        });
+
+        it("should handle dotfiles like .gitignore", () => {
+            expect(getPathExtension("/project/.gitignore")).toBe(".gitignore");
         });
     });
 
