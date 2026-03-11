@@ -109,9 +109,8 @@ export function activate(context: vscode.ExtensionContext): void {
     // Register the warmUp command
     context.subscriptions.push(
         vscode.commands.registerCommand("lineCounter.warmUp", async () => {
-            vscode.window.showInformationMessage("Stanza: Warming up workspace badges...");
             await provider.warmUpWorkspace(true);
-            vscode.window.showInformationMessage("Stanza: Workspace badges warmed up successfully!");
+            vscode.window.showInformationMessage("Stanza: Workspace badges warmed up!");
         })
     );
 
