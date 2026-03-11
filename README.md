@@ -1,7 +1,7 @@
 # StanzaLineCounter
 
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/Psychobarge.stanza-line-counter)](https://marketplace.visualstudio.com/items?itemName=Psychobarge.stanza-line-counter)
-[![Build Status](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/tests.yml)
+[![Build Status](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/actions.yml/badge.svg)](https://github.com/psychobarge/StanzaLineCounter/actions/workflows/actions.yml)
 [![TypeScript](https://img.shields.io/badge/Language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Changelog](https://img.shields.io/badge/Changelog-blue)](CHANGELOG.md)

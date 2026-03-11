@@ -54,17 +54,18 @@ export function countLinesStream(fsPath: string): Promise<number> {
         let lastCharWasNewline = false;
         let fileIsEmpty = true;
 
-        stream.on("data", (chunk: Buffer) => {
-            if (chunk.length > 0) {
+        stream.on("data", (chunk: Buffer | string) => {
+            const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+            if (buffer.length > 0) {
                 fileIsEmpty = false;
             }
-            for (let i = 0; i < chunk.length; i++) {
-                if (chunk[i] === 0x0a) {
+            for (let i = 0; i < buffer.length; i++) {
+                if (buffer[i] === 0x0a) {
                     count++;
                 }
             }
-            if (chunk.length > 0) {
-                lastCharWasNewline = chunk[chunk.length - 1] === 0x0a;
+            if (buffer.length > 0) {
+                lastCharWasNewline = buffer[buffer.length - 1] === 0x0a;
             }
         });
 

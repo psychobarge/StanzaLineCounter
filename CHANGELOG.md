@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-03-11
+
+### Modified
+- **fix: Type safety in utils.ts**: Improved type handling in the line counting stream function to properly handle both Buffer and string chunks.
+- **chore: Dependencies**: Updated @types/node from ^18.0.0 to ^20.19.37.
+- **chore: CI/CD**: Renamed GitHub Actions workflow and updated README badge reference.
+
+
 ## [0.7.0] - 2026-03-11
 
 ### Added
