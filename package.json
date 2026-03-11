@@ -143,6 +143,18 @@
           "type": "boolean",
           "default": false,
           "description": "If enabled, the extension will proactively scan the workspace at startup to display badges on folders. If disabled (default for performance), badges will only appear on folders once their contents are loaded in the Explorer."
+        },
+        "lineCounter.extensionLimits": {
+          "type": "object",
+          "patternProperties": {
+            "^\\..+$": {
+              "type": "number",
+              "minimum": 1,
+              "description": "Line limit for this specific file extension"
+            }
+          },
+          "default": {},
+          "description": "Extension-specific line count limits. Example: {\".ts\": 400, \".js\": 300}. Files with these extensions will use their specific limits instead of the global limit."
         }
       }
     },
@@ -158,6 +170,10 @@
       {
         "command": "lineCounter.warmUp",
         "title": "Stanza : Warm up workspace badges"
+      },
+      {
+        "command": "lineCounter.setExtensionLimit",
+        "title": "Stanza : Set line limit for this extension"
       }
     ],
     "menus": {
@@ -174,6 +190,11 @@
         {
           "command": "lineCounter.warmUp",
           "group": "modification"
+        },
+        {
+          "command": "lineCounter.setExtensionLimit",
+          "group": "modification",
+          "when": "explorerResourceIsFolder == false && resourceExtname != ''"
         }
       ]
     }

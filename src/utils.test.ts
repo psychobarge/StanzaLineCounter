@@ -8,6 +8,21 @@ import {
     getDecorationSpec,
 } from "./utils";
 
+// Helper function to test extension-specific limit logic (case-insensitive)
+function getExtensionLimit(fileExtension: string, extensionLimits: Record<string, number>, globalLimit: number): number {
+    if (!fileExtension) {
+        return globalLimit;
+    }
+    const lowerExtension = fileExtension.toLowerCase();
+    // Find extension in limits (case-insensitive)
+    for (const [ext, limit] of Object.entries(extensionLimits)) {
+        if (ext.toLowerCase() === lowerExtension) {
+            return limit;
+        }
+    }
+    return globalLimit;
+}
+
 
 describe("utils", () => {
     describe("formatBadge", () => {
@@ -226,6 +241,49 @@ describe("utils", () => {
                 expect(spec.badge).toBe("😡");
                 expect(spec.useLimitColor).toBe(true);
             });
+        });
+    });
+
+    describe("getExtensionLimit", () => {
+        it("should return extension-specific limit when it exists", () => {
+            const extensionLimits = { ".ts": 400, ".js": 300 };
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(400);
+            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(300);
+        });
+
+        it("should return global limit when extension-specific limit doesn't exist", () => {
+            const extensionLimits = { ".ts": 400 };
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit(".py", extensionLimits, globalLimit)).toBe(250);
+            expect(getExtensionLimit(".md", extensionLimits, globalLimit)).toBe(250);
+        });
+
+        it("should return global limit when extension is empty", () => {
+            const extensionLimits = { ".ts": 400 };
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit("", extensionLimits, globalLimit)).toBe(250);
+        });
+
+        it("should be case-insensitive for extension matching", () => {
+            const extensionLimits = { ".ts": 400, ".JS": 350 };
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(400);
+            expect(getExtensionLimit(".TS", extensionLimits, globalLimit)).toBe(400);
+            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(350);
+            expect(getExtensionLimit(".Js", extensionLimits, globalLimit)).toBe(350);
+        });
+
+        it("should handle empty extension limits object", () => {
+            const extensionLimits = {};
+            const globalLimit = 300;
+            
+            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(300);
+            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(300);
         });
     });
 });
