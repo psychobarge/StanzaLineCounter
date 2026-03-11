@@ -182,11 +182,11 @@ export class LineCountDecorationProvider
     }
 
     /** Proactively scan the workspace to find files exceeding the limit. */
-    async warmUpWorkspace(): Promise<void> {
+    async warmUpWorkspace(force: boolean = false): Promise<void> {
         const config = vscode.workspace.getConfiguration("lineCounter");
 
         const enableWorkspaceWarmUp: boolean = config.get("enableWorkspaceWarmUp", false);
-        if (!enableWorkspaceWarmUp) {
+        if (!enableWorkspaceWarmUp && !force) {
             return;
         }
 
