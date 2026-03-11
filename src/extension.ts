@@ -115,6 +115,87 @@ export function activate(context: vscode.ExtensionContext): void {
         })
     );
 
+    // Register the setExtensionLimit command
+    context.subscriptions.push(
+        vscode.commands.registerCommand("lineCounter.setExtensionLimit", async (uri: vscode.Uri) => {
+            if (!uri || uri.scheme !== "file") {
+                return;
+            }
+
+            const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
+            if (!fileExtension) {
+                vscode.window.showErrorMessage("Could not determine file extension.");
+                return;
+            }
+
+            const config = vscode.workspace.getConfiguration("lineCounter");
+            const extensionLimits: Record<string, number> = config.get("extensionLimits", {});
+            const excludeExtensions: string[] = config.get("excludeExtensions", []);
+            
+            // Check if this extension is currently excluded
+            const isExcluded = excludeExtensions.some(ext => ext.toLowerCase() === fileExtension);
+            
+            if (isExcluded) {
+                const answer = await vscode.window.showInformationMessage(
+                    `The extension '${fileExtension}' is currently in the ignore list. Do you want to remove it from the ignore list and set a line limit for it?`,
+                    "Yes",
+                    "No"
+                );
+                
+                if (answer !== "Yes") {
+                    return;
+                }
+                
+                // Remove from exclude list
+                const updatedExcludeExtensions = excludeExtensions.filter(ext => ext.toLowerCase() !== fileExtension);
+                await config.update("excludeExtensions", updatedExcludeExtensions, vscode.ConfigurationTarget.Global);
+            }
+
+            // Get current limit if it exists
+            const currentLimit = extensionLimits[fileExtension];
+            const defaultValue = currentLimit ? currentLimit.toString() : "";
+
+            // Ask for new limit
+            const newLimitStr = await vscode.window.showInputBox({
+                prompt: `Set line limit for '${fileExtension}' files`,
+                placeHolder: "Enter line limit (number)",
+                value: defaultValue,
+                validateInput: (value) => {
+                    if (!value.trim()) {
+                        return "Please enter a number or 0 to remove the limit.";
+                    }
+                    const num = Number(value.trim());
+                    if (!Number.isInteger(num) || num < 0) {
+                        return "Please enter a positive integer or 0 to remove the limit.";
+                    }
+                    return null;
+                }
+            });
+
+            if (newLimitStr === undefined) {
+                return; // User cancelled
+            }
+
+            const newLimit = Number(newLimitStr.trim());
+            
+            if (newLimit === 0) {
+                // Remove the extension limit
+                const updatedLimits = { ...extensionLimits };
+                delete updatedLimits[fileExtension];
+                await config.update("extensionLimits", updatedLimits, vscode.ConfigurationTarget.Global);
+                vscode.window.showInformationMessage(`Removed line limit for '${fileExtension}' files.`);
+            } else {
+                // Set the extension limit
+                const updatedLimits = { ...extensionLimits, [fileExtension]: newLimit };
+                await config.update("extensionLimits", updatedLimits, vscode.ConfigurationTarget.Global);
+                vscode.window.showInformationMessage(`Set line limit for '${fileExtension}' files to ${newLimit}.`);
+            }
+
+            // Refresh decorations to apply the new limit
+            provider.refreshAll();
+        })
+    );
+
     // Clean up provider on deactivation
     context.subscriptions.push(provider);
 }

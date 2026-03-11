@@ -6,6 +6,7 @@ import {
     shouldExcludePath,
     isTooLarge,
     getDecorationSpec,
+    getPathExtension,
 } from "./utils";
 
 
@@ -80,10 +81,15 @@ export class LineCountDecorationProvider
             "env",
             ".env",
         ]);
-        const limit: number = config.get("limit", 300);
+        const extensionLimits: Record<string, number> = config.get("extensionLimits", {});
+        const globalLimit: number = config.get("limit", 300);
         const limitColor: string = config.get("limitColor", "editorInfo.foreground");
         const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
         const useSmileys: boolean = config.get("useSmileys", false);
+
+        // Get extension-specific limit or use global limit
+        const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
+        const limit = fileExtension && extensionLimits[fileExtension] ? extensionLimits[fileExtension] : globalLimit;
 
         // Check for exclusions (folders or extensions)
         if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
@@ -195,7 +201,8 @@ export class LineCountDecorationProvider
             return;
         }
 
-        const limit: number = config.get("limit", 300);
+        const extensionLimits: Record<string, number> = config.get("extensionLimits", {});
+        const globalLimit: number = config.get("limit", 300);
         const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
         const excludeExtensions: string[] = config.get("excludeExtensions", []);
         const excludeFolders: string[] = config.get("excludeFolders", [
@@ -253,7 +260,11 @@ export class LineCountDecorationProvider
                         // Seed cache
                         this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
 
-                        if (lineCount > limit) {
+                        // Get extension-specific limit for this file
+                        const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
+                        const fileLimit = fileExtension && extensionLimits[fileExtension] ? extensionLimits[fileExtension] : globalLimit;
+
+                        if (lineCount > fileLimit) {
                             // Update exceeded status directly to avoid unnecessary re-reads
                             const fsPath = uri.fsPath;
                             if (!this.exceededFiles.has(fsPath)) {
