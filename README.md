@@ -18,15 +18,16 @@ This extension was developed with the assistance of an AI coding tool. That said
 ## Features
 
 - **Line count badges** — Each file shows a compact line count badge next to its name.
-- **Folder warning tags** — Folders containing files that exceed the line limit display a warning badge (⚠).
-- **Ignore files/folders** — Easily exclude files or folders directly from the Explorer via right-click > **Stanza: Ignore this file/folder**.
-- **Ignore extensions from Explorer** — Right-click a file to add its extension to ignored extensions via **Stanza : Add file extension to ignore list** (shown only when the extension is not already excluded).
 - **Threshold alert** — Files exceeding the configured limit are highlighted with a customizable color.
-- **Excluded extensions** — Skip files by extension (logs, images, media, etc.).
-- **Excluded paths** — Skip entire directories or specific files by name/relative path.
+- **Folder warning tags** — Folders containing files that exceed the line limit display a warning badge (⚠).
+- **Customizable threshold** — Set your own line limit threshold per file extension.
+- **Ignore extensions** — Customize which file extensions are excluded from line count calculations.
+- **Ignore files/folders** — Customize which files or folders are excluded from line count calculations.
+- **Easy exclusion** — Easily exclude extension, files or folders directly from the Explorer via right-click > 
+   - **Stanza: Ignore this extension**
+   - **Stanza: Ignore this file/folder**
 - **Live refresh** — Badges update automatically on file changes or configuration updates.
 - **Performance optimizations** — Streaming, caching, and background workspace scanning to ensure a smooth UI.
-
 
 ## Badge format
 
@@ -50,29 +51,7 @@ Any IDE based on VS Code:
 
 ## Installation
 
-### From the marketplace
-
-1. Open VS Code or Cursor.
-2. Go to **Extensions** (Ctrl+Shift+X / Cmd+Shift+X).
-3. Search for **StanzaLineCounter**.
-4. Click **Install**.
-
-### Via VSIX if you cannot see the extension
-
-If the extension does not appear in the marketplace, install it from a VSIX file:
-
-1. **Generate the VSIX** (from the project root):
-   ```bash
-   npm install
-   npm run compile
-   npx vsce package
-   ```
-   This creates a file like `stanza-line-counter-0.2.0.vsix`.
-
-2. **Install the VSIX** :
-   - Open the Command Palette (Ctrl+Shift+P / Cmd+Shift+P).
-   - Run **Extensions: Install from VSIX...**.
-   - Select the generated `.vsix` file.
+This extension is available on the VS Code Marketplace and Open VSX Marketplace.
 
 ## Configuration
 
@@ -94,27 +73,6 @@ StanzaLineCounter is designed to be lightweight even on large projects:
 - **Intelligent Caching**: Results are cached and only re-calculated if the file modification time changes.
 - **Non-blocking Warmup**: The workspace scan runs in chunks and yields to the event loop, ensuring your IDE remains responsive.
 - **Path-based lookups**: Folder badges are calculated from a flat list of known exceeded files, avoiding expensive recursion during Explorer renders.
-
-
-## Development
-
-```bash
-# Clone the repository
-git clone https://github.com/psychobarge/StanzaLineCounter.git
-cd StanzaLineCounter
-
-# Install dependencies
-npm install
-
-# Compile
-npm run compile   # or npm run watch for watch mode
-
-# Run tests
-npm test          # or npm run test:watch for watch mode
-npm run test:coverage # for coverage report
-```
-
-To test the extension visually, press **F5** in VS Code / Cursor to launch the Extension Development Host.
 
 ## License
 
