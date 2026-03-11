@@ -105,17 +105,21 @@ export function shouldExcludePath(
 ): boolean {
     const normalizedPath = fsPath.replace(/\\/g, "/");
     const segments = normalizedPath.split("/");
+    const normalizedPathLower = normalizedPath.toLowerCase();
 
-    // Check if any segment matches (folder names) or if the whole path ends with an excluded path (relative files)
+    // Check if any segment matches (folder names) or if the whole path ends with an excluded path (relative files).
+    // Use case-insensitive comparison so that blacklisted folders match regardless of OS/filesystem casing.
     if (
         excludeFolders.some((exclude) => {
             const normalizedExclude = exclude.replace(/\\/g, "/");
-            // If it's a simple name, check segments
+            const normalizedExcludeLower = normalizedExclude.toLowerCase();
+            // If it's a simple name, check segments (case-insensitive)
             if (!normalizedExclude.includes("/")) {
-                return segments.includes(normalizedExclude);
+                return segments.some((seg) => seg.toLowerCase() === normalizedExcludeLower);
             }
-            // If it's a relative path, check if normalizedPath ends with it
-            return normalizedPath.endsWith(normalizedExclude);
+            // If it's a relative path, check if path is inside or equals that folder (case-insensitive)
+            const segmentWithSlash = "/" + normalizedExcludeLower + "/";
+            return normalizedPathLower.includes(segmentWithSlash) || normalizedPathLower.endsWith("/" + normalizedExcludeLower);
         })
     ) {
         return true;

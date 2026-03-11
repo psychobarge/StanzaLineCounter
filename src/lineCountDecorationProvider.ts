@@ -48,6 +48,11 @@ export class LineCountDecorationProvider
             if (!showFolderBadges) {
                 return undefined;
             }
+            // Never show warning badge for folders that are in the ignore list
+            const excludeFolders: string[] = config.get("excludeFolders", []);
+            if (shouldExcludePath(uri.fsPath, excludeFolders, [])) {
+                return undefined;
+            }
             // Check if any exceeded file is inside this directory
             const folderPath = uri.fsPath + path.sep;
             for (const exceededPath of this.exceededFiles) {
