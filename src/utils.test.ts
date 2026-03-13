@@ -1,7 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { afterAll, describe, it, expect } from "vitest";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import {
     formatBadge,
     countLines,
+    countLinesStream,
     getPathExtension,
     shouldExcludePath,
     isTooLarge,
@@ -63,6 +67,63 @@ describe("utils", () => {
         it("should handle CRLF newlines correctly", () => {
             const content = new TextEncoder().encode("line 1\r\nline 2\r\nline 3");
             expect(countLines(content)).toBe(3);
+        });
+    });
+
+    describe("countLinesStream", () => {
+        const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "stanza-line-counter-tests-"));
+
+        afterAll(() => {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        });
+
+        function createTempFile(name: string, content: string): string {
+            const filePath = path.join(tempDir, name);
+            fs.writeFileSync(filePath, content, "utf8");
+            return filePath;
+        }
+
+        it("should return 0 for an empty file", async () => {
+            const filePath = createTempFile("empty.txt", "");
+            await expect(countLinesStream(filePath)).resolves.toBe(0);
+        });
+
+        it("should return 1 for content without newlines", async () => {
+            const filePath = createTempFile("single-line.txt", "hello world");
+            await expect(countLinesStream(filePath)).resolves.toBe(1);
+        });
+
+        it("should count newline-separated lines correctly", async () => {
+            const content = "line 1\nline 2\nline 3";
+            const filePath = createTempFile("multi-line.txt", content);
+            await expect(countLinesStream(filePath)).resolves.toBe(3);
+        });
+
+        it("should not count trailing newline as an extra line", async () => {
+            const content = "line 1\nline 2\n";
+            const filePath = createTempFile("trailing-newline.txt", content);
+            await expect(countLinesStream(filePath)).resolves.toBe(2);
+        });
+
+        it("should handle CRLF newlines and empty lines in between", async () => {
+            const content = "line 1\r\n\r\nline 3";
+            const filePath = createTempFile("crlf-empty-line.txt", content);
+            await expect(countLinesStream(filePath)).resolves.toBe(3);
+        });
+
+        it("should match countLines for equivalent content", async () => {
+            const content = "alpha\nbeta\ngamma\n";
+            const filePath = createTempFile("coherence.txt", content);
+
+            const fromStream = await countLinesStream(filePath);
+            const fromBuffer = countLines(new TextEncoder().encode(content));
+
+            expect(fromStream).toBe(fromBuffer);
+        });
+
+        it("should reject for a non-existent file", async () => {
+            const missingPath = path.join(tempDir, "does-not-exist.txt");
+            await expect(countLinesStream(missingPath)).rejects.toBeInstanceOf(Error);
         });
     });
 
