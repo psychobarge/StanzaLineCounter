@@ -1,12 +1,12 @@
 # Contributing to StanzaLineCounter
 
-Thanks for contributing.
+Thanks for contributing <3
 
 ## Prerequisites
 
 - Node.js 22+
 - npm 10+
-- VS Code (or compatible editor: Cursor, Windsurf, Trae)
+- VS Code (or compatible editor: Cursor, Windsurf, Trae ...)
 
 ## Local Setup
 
