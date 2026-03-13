@@ -301,7 +301,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "lint-staged": {
-        "*.{ts,mjs}": [
+        "src/**/*.{ts,mjs}": [
             "eslint --fix"
         ],
         "*.{ts,mjs,json,md,yml}": [
