@@ -9,8 +9,6 @@ import {
     getExtensionLimit,
 } from "./utils";
 
-
-
 describe("utils", () => {
     describe("formatBadge", () => {
         it("should return the number string for counts under 100", () => {
@@ -36,7 +34,6 @@ describe("utils", () => {
             expect(formatBadge(123456)).toBe("∞");
         });
     });
-
 
     describe("countLines", () => {
         it("should return 0 for empty content", () => {
@@ -89,84 +86,32 @@ describe("utils", () => {
         const excludeExtensions = [".log", ".png"];
 
         it("should return true if a folder segment matches", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/node_modules/packet/index.js",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(true);
-            expect(
-                shouldExcludePath(
-                    "C:\\project\\.git\\config",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(true);
+            expect(shouldExcludePath("/project/node_modules/packet/index.js", excludeFolders, excludeExtensions)).toBe(
+                true,
+            );
+            expect(shouldExcludePath("C:\\project\\.git\\config", excludeFolders, excludeExtensions)).toBe(true);
         });
 
         it("should return true if the extension matches", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/logs/error.log",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(true);
-            expect(
-                shouldExcludePath(
-                    "/project/images/logo.png",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(true);
+            expect(shouldExcludePath("/project/logs/error.log", excludeFolders, excludeExtensions)).toBe(true);
+            expect(shouldExcludePath("/project/images/logo.png", excludeFolders, excludeExtensions)).toBe(true);
         });
 
         it("should match extensions case-insensitively", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/images/PHOTO.PNG",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(true);
-            expect(
-                shouldExcludePath(
-                    "/project/images/photo.png",
-                    excludeFolders,
-                    [".PNG"]
-                )
-            ).toBe(true);
+            expect(shouldExcludePath("/project/images/PHOTO.PNG", excludeFolders, excludeExtensions)).toBe(true);
+            expect(shouldExcludePath("/project/images/photo.png", excludeFolders, [".PNG"])).toBe(true);
         });
 
         it("should return false if neither folder nor extension matches", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/src/index.ts",
-                    excludeFolders,
-                    excludeExtensions
-                )
-            ).toBe(false);
+            expect(shouldExcludePath("/project/src/index.ts", excludeFolders, excludeExtensions)).toBe(false);
         });
 
         it("should return true if a specific file name matches", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/src/secret.txt",
-                    ["secret.txt"],
-                    []
-                )
-            ).toBe(true);
+            expect(shouldExcludePath("/project/src/secret.txt", ["secret.txt"], [])).toBe(true);
         });
 
         it("should return true if a relative path matches", () => {
-            expect(
-                shouldExcludePath(
-                    "/project/src/generated/api.ts",
-                    ["src/generated/api.ts"],
-                    []
-                )
-            ).toBe(true);
+            expect(shouldExcludePath("/project/src/generated/api.ts", ["src/generated/api.ts"], [])).toBe(true);
         });
 
         it("should work with no extensions or folders to exclude", () => {
@@ -235,7 +180,7 @@ describe("utils", () => {
         it("should return extension-specific limit from object format", () => {
             const extensionLimits = { ".ts": 400, ".js": 300 };
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(300);
         });
@@ -243,10 +188,10 @@ describe("utils", () => {
         it("should return extension-specific limit from array format", () => {
             const extensionLimits = [
                 { extension: ".ts", limit: 400 },
-                { extension: ".js", limit: 300 }
+                { extension: ".js", limit: 300 },
             ];
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(300);
         });
@@ -254,28 +199,28 @@ describe("utils", () => {
         it("should return global limit when extension-specific limit doesn't exist (object)", () => {
             const extensionLimits = { ".ts": 400 };
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".py", globalLimit)).toBe(250);
         });
 
         it("should return global limit when extension-specific limit doesn't exist (array)", () => {
             const extensionLimits = [{ extension: ".ts", limit: 400 }];
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".py", globalLimit)).toBe(250);
         });
 
         it("should return global limit when extension is empty", () => {
             const extensionLimits = { ".ts": 400 };
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, "", globalLimit)).toBe(250);
         });
 
         it("should be case-insensitive for extension matching (object)", () => {
             const extensionLimits = { ".ts": 400, ".JS": 350 };
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".TS", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(350);
@@ -285,10 +230,10 @@ describe("utils", () => {
         it("should be case-insensitive for extension matching (array)", () => {
             const extensionLimits = [
                 { extension: ".ts", limit: 400 },
-                { extension: ".JS", limit: 350 }
+                { extension: ".JS", limit: 350 },
             ];
             const globalLimit = 250;
-            
+
             expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".TS", globalLimit)).toBe(400);
             expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(350);

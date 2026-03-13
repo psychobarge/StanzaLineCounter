@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.8.0] - 2026-03-13
 
 ### Added
+
 - **Feature: Default ignore list**: Expanded default exclude list with many more extensions (archives, media, documents, binaries, fonts, etc.: `.7z`, `.mp4`, `.pdf`, `.docx`, `.pyc`, `.so`, `.woff2`, `.xlsx`, etc.).
 - **Feature: Remove from ignore list**: Explorer context menu entries to remove an extension or a file/folder from the ignore list (`Stanza : Remove extension from ignore list`, `Stanza : Remove file/folder from ignore list`). Menu entries are shown conditionally depending on whether the resource is already ignored.
 - **Configuration**: `lineCounter.extensionLimits` now supports both object format `{".ts": 400}` and array format `[{"extension": ".ts", "limit": 400}]`.
 - **Configuration**: Added `lineCounter.autoRefreshWorkspace` (default: `true`) to control automatic workspace re-scan after ignore list or extension limit changes.
 
 ### Modified
+
 - **Fix: getPathExtension**: Correctly handles paths where the dot is in a directory name (no extension when the last dot is before the last path separator).
 - **Refactor: getExtensionLimit**: Moved to `utils.ts` and supports both object and array config formats with case-insensitive extension matching.
 - **UX**: Context-aware Explorer context menu: "Add to ignore" and "Remove from ignore" (for extensions and files/folders) are shown based on current ignore state.
@@ -25,49 +27,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.2] - 2026-03-12
 
 ### Fixed
+
 - **fix: Bug**: Bug that prevented ignored folders to behave as espected.
 
 ## [0.7.1] - 2026-03-11
 
 ### Modified
+
 - **fix: Type safety in utils.ts**: Improved type handling in the line counting stream function to properly handle both Buffer and string chunks.
 - **chore: Dependencies**: Updated @types/node from ^18.0.0 to ^20.19.37.
 - **chore: CI/CD**: Renamed GitHub Actions workflow and updated README badge reference.
 
-
 ## [0.7.0] - 2026-03-11
 
 ### Added
+
 - Feature: Add Explorer context menu entry `Stanza : Warm up workspace` to manually trigger a workspace scan.
 - Feature: Add option to set a custom line limit by file extension.
 - Feature: Add Explorer context menu entry `Stanza : Set line limit for this extension`.
 
 ### Modified
+
 - **chore: Readme**: Updated README.md with new features.
 
 ## [0.6.4] - 2026-03-09
 
 ### Added
+
 - Feature: Add Explorer context menu entry `Stanza : Add file extension to ignore list` for files whose extension is not already in `lineCounter.excludeExtensions`.
 
 ## [0.6.3] - 2026-03-06
 
 ### Modified
+
 - **fix**: Remove bold unicode characters from line count badges.
 
 ## [0.6.2] - 2026-03-06
 
 ### Modified
+
 - **chore: Readme**: Bump version to 0.6.2 folowing deploy error.
 
 ## [0.6.1] - 2026-03-06
 
 ### Modified
+
 - **chore: Readme**: Updated README.md with screenshots.
 
 ## [0.6.0] - 2026-03-06
 
 ### Added
+
 - **Feature: Folder warning tags**: Folders now display a warning badge (⚠) if they contain files exceeding the line limit.
 - **Performance: Workspace Warmup**: A new opt-in feature (`lineCounter.enableWorkspaceWarmUp`) to scan the workspace at startup. This ensures folder badges are visible immediately without needing to open the folders in the Explorer.
 - **Performance: Streaming line counts**: Optimization using Node streams to count lines in large files without loading the entire content into memory, significantly reducing memory footprint.
@@ -79,41 +89,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2026-03-05
 
 ### Added
+
 - Feature: Add file/folder to ignore list from Explorer context menu.
 - Better wording for ignore options in settings.
 
 ## [0.4.0] - 2026-03-04
 
 ### Added
+
 - Option to use emojis instead of line count badges (😎, 😬, 😡).
 
 ## [0.3.1] - 2026-03-04
 
 ### Added
+
 - Meaningful unit tests for core logic using Vitest.
 
 ## [0.3.0] - 2026-03-04
 
 ### Added
+
 - Maximum file size exclusion (default 10MB) to prevent performance issues.
 
 ## [0.2.2] - 2026-03-04
 
 ### Added
+
 - Ignore folders option with `node_modules`, `.git`, `vendor`, etc., ignored by default.
 
 ## [0.2.1] - 2026-03-04
 
 ### Fixed
+
 - README badge issues and VSIX installation documentation.
 
 ## [0.2.0] - 2026-03-04
 
 ### Added
+
 - Customizable threshold alert colors.
 - Unicode bold formatting for line count badges.
 
 ## [0.1.0] - 2026-03-04
 
 ### Added
+
 - Initial release: basic line count badges in the Explorer panel.

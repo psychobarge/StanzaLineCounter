@@ -1,5 +1,5 @@
-import tseslint from 'typescript-eslint';
-import js from '@eslint/js';
+import tseslint from "typescript-eslint";
+import js from "@eslint/js";
 
 export default tseslint.config(
     js.configs.recommended,
@@ -14,17 +14,12 @@ export default tseslint.config(
         rules: {
             "@typescript-eslint/no-unused-vars": "warn",
             "no-unused-vars": "off",
-            "semi": ["warn", "always"],
-            "curly": "warn",
-            "eqeqeq": "warn",
+            semi: ["warn", "always"],
+            curly: "warn",
+            eqeqeq: "warn",
         },
     },
     {
-        ignores: [
-            "out/**",
-            "dist/**",
-            "**/*.d.ts",
-            "node_modules/**"
-        ]
-    }
+        ignores: ["out/**", "dist/**", "**/*.d.ts", "node_modules/**"],
+    },
 );

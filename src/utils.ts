@@ -21,7 +21,6 @@ export function formatBadge(lineCount: number): string {
     return "∞";
 }
 
-
 /**
  * Counts the number of lines in a buffer.
  */
@@ -107,11 +106,7 @@ export function getPathExtension(fsPath: string): string {
  * Robustly retrieves the extension limit from configuration, supporting both object and array formats.
  * Case-insensitive for extension matching.
  */
-export function getExtensionLimit(
-    extensionLimits: unknown,
-    fileExtension: string,
-    globalLimit: number
-): number {
+export function getExtensionLimit(extensionLimits: unknown, fileExtension: string, globalLimit: number): number {
     if (!fileExtension) {
         return globalLimit;
     }
@@ -147,11 +142,7 @@ export function getExtensionLimit(
 /**
  * Checks if a file path should be excluded based on folder names or extensions.
  */
-export function shouldExcludePath(
-    fsPath: string,
-    excludeFolders: string[],
-    excludeExtensions: string[]
-): boolean {
+export function shouldExcludePath(fsPath: string, excludeFolders: string[], excludeExtensions: string[]): boolean {
     const normalizedPath = fsPath.replace(/\\/g, "/");
     const segments = normalizedPath.split("/");
     const normalizedPathLower = normalizedPath.toLowerCase();
@@ -168,7 +159,10 @@ export function shouldExcludePath(
             }
             // If it's a relative path, check if path is inside or equals that folder (case-insensitive)
             const segmentWithSlash = "/" + normalizedExcludeLower + "/";
-            return normalizedPathLower.includes(segmentWithSlash) || normalizedPathLower.endsWith("/" + normalizedExcludeLower);
+            return (
+                normalizedPathLower.includes(segmentWithSlash) ||
+                normalizedPathLower.endsWith("/" + normalizedExcludeLower)
+            );
         })
     ) {
         return true;
@@ -176,12 +170,7 @@ export function shouldExcludePath(
 
     // Check excluded extensions (case-insensitive)
     const ext = getPathExtension(fsPath).toLowerCase();
-    if (
-        ext &&
-        excludeExtensions.some(
-            (excludeExtension) => excludeExtension.toLowerCase() === ext
-        )
-    ) {
+    if (ext && excludeExtensions.some((excludeExtension) => excludeExtension.toLowerCase() === ext)) {
         return true;
     }
 
@@ -204,11 +193,7 @@ export interface DecorationSpec {
 /**
  * Determines the decoration specification based on line count and limit.
  */
-export function getDecorationSpec(
-    lineCount: number,
-    limit: number,
-    useSmileys: boolean = false
-): DecorationSpec {
+export function getDecorationSpec(lineCount: number, limit: number, useSmileys: boolean = false): DecorationSpec {
     const isExceeded = lineCount > limit;
     const isNearLimit = lineCount >= limit * 0.9;
 

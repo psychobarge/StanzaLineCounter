@@ -64,9 +64,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
     // Register the FileDecorationProvider
-    context.subscriptions.push(
-        vscode.window.registerFileDecorationProvider(provider)
-    );
+    context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
     // Warm up workspace to eagerly show folder decorations
     provider.warmUpWorkspace("startup");
@@ -76,7 +74,7 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument((document) => {
             provider.refreshUri(document.uri);
-        })
+        }),
     );
 
     // Refresh all decorations when configuration changes
@@ -86,20 +84,14 @@ export function activate(context: vscode.ExtensionContext): void {
                 provider.refreshAll();
                 void updateIgnoreMenuContexts();
             }
-        })
+        }),
     );
 
     // Refresh decorations when files are created or deleted
     const watcher = vscode.workspace.createFileSystemWatcher("**/*");
-    context.subscriptions.push(
-        watcher.onDidCreate((uri) => provider.refreshUri(uri))
-    );
-    context.subscriptions.push(
-        watcher.onDidDelete((uri) => provider.refreshUri(uri))
-    );
-    context.subscriptions.push(
-        watcher.onDidChange((uri) => provider.refreshUri(uri))
-    );
+    context.subscriptions.push(watcher.onDidCreate((uri) => provider.refreshUri(uri)));
+    context.subscriptions.push(watcher.onDidDelete((uri) => provider.refreshUri(uri)));
+    context.subscriptions.push(watcher.onDidChange((uri) => provider.refreshUri(uri)));
     context.subscriptions.push(watcher);
 
     // Register the addToIgnoreList command
@@ -126,7 +118,7 @@ export function activate(context: vscode.ExtensionContext): void {
             } else {
                 vscode.window.showInformationMessage(`'${pathToAdd}' is already in the ignore list.`);
             }
-        })
+        }),
     );
 
     // Register the addExtensionToIgnoreList command
@@ -143,28 +135,18 @@ export function activate(context: vscode.ExtensionContext): void {
 
             const config = vscode.workspace.getConfiguration("lineCounter");
             const excludeExtensions: string[] = config.get("excludeExtensions", []);
-            const alreadyIgnored = excludeExtensions.some(
-                (extension) => extension.toLowerCase() === fileExtension
-            );
+            const alreadyIgnored = excludeExtensions.some((extension) => extension.toLowerCase() === fileExtension);
 
             if (alreadyIgnored) {
-                vscode.window.showInformationMessage(
-                    `'${fileExtension}' is already in the extension ignore list.`
-                );
+                vscode.window.showInformationMessage(`'${fileExtension}' is already in the extension ignore list.`);
                 return;
             }
 
             const updatedExcludeExtensions = [...excludeExtensions, fileExtension];
-            await config.update(
-                "excludeExtensions",
-                updatedExcludeExtensions,
-                vscode.ConfigurationTarget.Global
-            );
+            await config.update("excludeExtensions", updatedExcludeExtensions, vscode.ConfigurationTarget.Global);
             await updateIgnoreMenuContexts();
-            vscode.window.showInformationMessage(
-                `Added '${fileExtension}' to Stanza extension ignore list.`
-            );
-        })
+            vscode.window.showInformationMessage(`Added '${fileExtension}' to Stanza extension ignore list.`);
+        }),
     );
 
     // Register the removeExtensionFromIgnoreList command
@@ -181,31 +163,21 @@ export function activate(context: vscode.ExtensionContext): void {
 
             const config = vscode.workspace.getConfiguration("lineCounter");
             const excludeExtensions: string[] = config.get("excludeExtensions", []);
-            const hasMatch = excludeExtensions.some(
-                (extension) => extension.toLowerCase() === fileExtension
-            );
+            const hasMatch = excludeExtensions.some((extension) => extension.toLowerCase() === fileExtension);
 
             if (!hasMatch) {
-                vscode.window.showInformationMessage(
-                    `'${fileExtension}' is not in the extension ignore list.`
-                );
+                vscode.window.showInformationMessage(`'${fileExtension}' is not in the extension ignore list.`);
                 return;
             }
 
             const updatedExcludeExtensions = excludeExtensions.filter(
-                (extension) => extension.toLowerCase() !== fileExtension
+                (extension) => extension.toLowerCase() !== fileExtension,
             );
-            await config.update(
-                "excludeExtensions",
-                updatedExcludeExtensions,
-                vscode.ConfigurationTarget.Global
-            );
+            await config.update("excludeExtensions", updatedExcludeExtensions, vscode.ConfigurationTarget.Global);
             await updateIgnoreMenuContexts();
             provider.refreshAll();
-            vscode.window.showInformationMessage(
-                `Removed '${fileExtension}' from Stanza extension ignore list.`
-            );
-        })
+            vscode.window.showInformationMessage(`Removed '${fileExtension}' from Stanza extension ignore list.`);
+        }),
     );
 
     // Register the removeFromIgnoreList command
@@ -225,13 +197,11 @@ export function activate(context: vscode.ExtensionContext): void {
             const normalizedTarget = normalizePathForComparison(pathToRemove);
 
             const entryIndex = excludeFolders.findIndex(
-                (entry) => normalizePathForComparison(entry) === normalizedTarget
+                (entry) => normalizePathForComparison(entry) === normalizedTarget,
             );
 
             if (entryIndex === -1) {
-                vscode.window.showInformationMessage(
-                    `'${pathToRemove}' is not in the ignore list.`
-                );
+                vscode.window.showInformationMessage(`'${pathToRemove}' is not in the ignore list.`);
                 return;
             }
 
@@ -240,10 +210,8 @@ export function activate(context: vscode.ExtensionContext): void {
             await config.update("excludeFolders", updatedExcludes, vscode.ConfigurationTarget.Global);
             await updateIgnoreMenuContexts();
             provider.refreshAll();
-            vscode.window.showInformationMessage(
-                `Removed '${removedEntry}' from Stanza ignore list.`
-            );
-        })
+            vscode.window.showInformationMessage(`Removed '${removedEntry}' from Stanza ignore list.`);
+        }),
     );
 
     // Register the warmUp command
@@ -251,7 +219,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("lineCounter.warmUp", async () => {
             await provider.warmUpWorkspace("manual");
             vscode.window.showInformationMessage("Stanza: Workspace badges warmed up!");
-        })
+        }),
     );
 
     // Register the setExtensionLimit command
@@ -270,23 +238,23 @@ export function activate(context: vscode.ExtensionContext): void {
             const config = vscode.workspace.getConfiguration("lineCounter");
             const extensionLimits: unknown = config.get("extensionLimits", {});
             const excludeExtensions: string[] = config.get("excludeExtensions", []);
-            
+
             // Check if this extension is currently excluded
-            const isExcluded = excludeExtensions.some(ext => ext.toLowerCase() === fileExtension);
-            
+            const isExcluded = excludeExtensions.some((ext) => ext.toLowerCase() === fileExtension);
+
             if (isExcluded) {
                 const answer = await vscode.window.showInformationMessage(
                     `The extension '${fileExtension}' is currently in the ignore list. Do you want to remove it from the ignore list and set a line limit for it?`,
                     "Yes",
-                    "No"
+                    "No",
                 );
-                
+
                 if (answer !== "Yes") {
                     return;
                 }
-                
+
                 // Remove from exclude list
-                const updatedExcludeExtensions = excludeExtensions.filter(ext => ext.toLowerCase() !== fileExtension);
+                const updatedExcludeExtensions = excludeExtensions.filter((ext) => ext.toLowerCase() !== fileExtension);
                 await config.update("excludeExtensions", updatedExcludeExtensions, vscode.ConfigurationTarget.Global);
                 await updateIgnoreMenuContexts();
             }
@@ -309,7 +277,7 @@ export function activate(context: vscode.ExtensionContext): void {
                         return "Please enter a positive integer or 0 to remove the limit.";
                     }
                     return null;
-                }
+                },
             });
 
             if (newLimitStr === undefined) {
@@ -317,13 +285,17 @@ export function activate(context: vscode.ExtensionContext): void {
             }
 
             const newLimit = Number(newLimitStr.trim());
-            
+
             if (newLimit === 0) {
                 // Remove the extension limit
                 let updatedLimits: unknown;
                 if (Array.isArray(extensionLimits)) {
-                    updatedLimits = extensionLimits.filter((entry: unknown) =>
-                        !(isExtensionLimitEntry(entry) && entry.extension.toLowerCase() === fileExtension.toLowerCase())
+                    updatedLimits = extensionLimits.filter(
+                        (entry: unknown) =>
+                            !(
+                                isExtensionLimitEntry(entry) &&
+                                entry.extension.toLowerCase() === fileExtension.toLowerCase()
+                            ),
                     );
                 } else if (extensionLimits && typeof extensionLimits === "object") {
                     updatedLimits = { ...(extensionLimits as Record<string, unknown>) };
@@ -343,8 +315,8 @@ export function activate(context: vscode.ExtensionContext): void {
                 let updatedLimits: ExtensionLimitEntry[] | Record<string, unknown>;
                 if (Array.isArray(extensionLimits)) {
                     const normalizedLimits = extensionLimits.filter(isExtensionLimitEntry);
-                    const index = normalizedLimits.findIndex((entry) =>
-                        entry.extension.toLowerCase() === fileExtension.toLowerCase()
+                    const index = normalizedLimits.findIndex(
+                        (entry) => entry.extension.toLowerCase() === fileExtension.toLowerCase(),
                     );
                     updatedLimits = [...normalizedLimits];
                     if (index !== -1) {
@@ -372,7 +344,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
             // Refresh decorations to apply the new limit
             provider.refreshAll();
-        })
+        }),
     );
 
     // Clean up provider on deactivation
