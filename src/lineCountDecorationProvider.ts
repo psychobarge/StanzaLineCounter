@@ -155,19 +155,7 @@ export class LineCountDecorationProvider implements vscode.FileDecorationProvide
             } else {
                 this.exceededFiles.delete(fsPath);
             }
-
-            // Refresh all parent directories
-            let parentPath = path.dirname(fsPath);
-            const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-            const rootPath = workspaceFolder ? workspaceFolder.uri.fsPath : undefined;
-
-            while (parentPath && parentPath !== rootPath && parentPath !== path.dirname(parentPath)) {
-                this._onDidChangeFileDecorations.fire(vscode.Uri.file(parentPath));
-                parentPath = path.dirname(parentPath);
-            }
-            if (rootPath) {
-                this._onDidChangeFileDecorations.fire(vscode.Uri.file(rootPath));
-            }
+            this.refreshParentDirectories(uri);
         }
     }
 
@@ -273,23 +261,7 @@ export class LineCountDecorationProvider implements vscode.FileDecorationProvide
                                 const fsPath = uri.fsPath;
                                 if (!this.exceededFiles.has(fsPath)) {
                                     this.exceededFiles.add(fsPath);
-
-                                    // Refresh all parent directories
-                                    let parentPath = path.dirname(fsPath);
-                                    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-                                    const rootPath = workspaceFolder ? workspaceFolder.uri.fsPath : undefined;
-
-                                    while (
-                                        parentPath &&
-                                        parentPath !== rootPath &&
-                                        parentPath !== path.dirname(parentPath)
-                                    ) {
-                                        this._onDidChangeFileDecorations.fire(vscode.Uri.file(parentPath));
-                                        parentPath = path.dirname(parentPath);
-                                    }
-                                    if (rootPath) {
-                                        this._onDidChangeFileDecorations.fire(vscode.Uri.file(rootPath));
-                                    }
+                                    this.refreshParentDirectories(uri);
                                 }
                             }
                         } catch {
@@ -311,6 +283,20 @@ export class LineCountDecorationProvider implements vscode.FileDecorationProvide
     }
 
     // ─── Internals ──────────────────────────────────────────────
+
+    private refreshParentDirectories(uri: vscode.Uri): void {
+        let parentPath = path.dirname(uri.fsPath);
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+        const rootPath = workspaceFolder ? workspaceFolder.uri.fsPath : undefined;
+
+        while (parentPath && parentPath !== rootPath && parentPath !== path.dirname(parentPath)) {
+            this._onDidChangeFileDecorations.fire(vscode.Uri.file(parentPath));
+            parentPath = path.dirname(parentPath);
+        }
+        if (rootPath) {
+            this._onDidChangeFileDecorations.fire(vscode.Uri.file(rootPath));
+        }
+    }
 
     private buildDecoration(
         lineCount: number,
