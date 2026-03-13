@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-03-13
+
+### Added
+
+- **docs**: Contributor onboarding guide.
+- **test**: Coverage thresholds enforcement in Vitest.
+- **test**: Stream-based line counting behavior tests.
+
+### Modified
+
+- **fix**: Clean minor config and hygiene issues.
+- **chore**: Update @types/node to latest release.
+- **chore**: Enforce pre-commit quality checks.
+- **chore**: Prettier checks and baseline formatting.
+- **refactor**: Move command registration into dedicated module.
+- **refactor**: Centralize parent directory decoration refresh.
+- **build**: Migrate extension build to esbuild.
+
 ## [0.8.0] - 2026-03-13
 
 ### Added
