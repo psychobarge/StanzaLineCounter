@@ -24,8 +24,11 @@ This extension was developed with the assistance of an AI coding tool. That said
 - **Ignore extensions** — Customize which file extensions are excluded from line count calculations.
 - **Ignore files/folders** — Customize which files or folders are excluded from line count calculations.
 - **Easy exclusion** — Easily exclude extension, files or folders directly from the Explorer via right-click > 
-   - **Stanza: Ignore this extension**
-   - **Stanza: Ignore this file/folder**
+   - **Stanza: Ignore extension**
+   - **Stanza: Ignore file/folder**
+- **Easy inclusion** - Easily include previousy excluded extension, file or folders directly from the Exmplorer via right-click >
+   - **Stanza: Remove extension from ignore list**
+   - **Stanza: Remove file/folder from ignore list**
 - **Live refresh** — Badges update automatically on file changes or configuration updates.
 - **Performance optimizations** — Streaming, caching, and background workspace scanning to ensure a smooth UI.
 
@@ -63,15 +66,15 @@ This extension is available on the VS Code Marketplace and Open VSX Marketplace.
 | `lineCounter.excludeExtensions`  | string[] | `[...]`                      | File extensions to exclude from counting. |
 | `lineCounter.excludeFolders`     | string[] | `[...]`                      | Folders or specific paths to exclude (e.g. `node_modules`, `src/gen.ts`). |
 | `lineCounter.useSmileys`          | boolean  | `false`                       | Use emojis instead of numbers (😎 below 90%, 😬 near limit, 😡 exceeded).                      |
-| `lineCounter.showFolderBadges`    | boolean  | `true`                        | Display warning tags on folders containing exceeded files. |
-| `lineCounter.enableWorkspaceWarmUp` | boolean  | `false`                       | Background scan at startup to find exceeded files in the entire workspace. (Recommended for large projects with folder badges enabled) |
+| `lineCounter.showFolderBadges`    | boolean  | `true`                        | Display warning tags on folders containing exceeded files. Badges are computed at startup. |
+| `lineCounter.autoRefreshWorkspace` | boolean  | `true`                        | Re-scan workspace automatically after ignore list or extension limit changes to keep folder badges up to date. |
 
 ## Performance
 
 StanzaLineCounter is designed to be lightweight even on large projects:
 - **Streaming**: For local files, we use Node streams to count lines without loading the whole file into RAM.
 - **Intelligent Caching**: Results are cached and only re-calculated if the file modification time changes.
-- **Non-blocking Warmup**: The workspace scan runs in chunks and yields to the event loop, ensuring your IDE remains responsive.
+- **Startup warmup + optional auto-refresh**: A workspace scan always runs at startup, and can re-run after configuration changes (`lineCounter.autoRefreshWorkspace`) while staying non-blocking.
 - **Path-based lookups**: Folder badges are calculated from a flat list of known exceeded files, avoiding expensive recursion during Explorer renders.
 
 ## License

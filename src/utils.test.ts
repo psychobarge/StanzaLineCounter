@@ -6,22 +6,9 @@ import {
     shouldExcludePath,
     isTooLarge,
     getDecorationSpec,
+    getExtensionLimit,
 } from "./utils";
 
-// Helper function to test extension-specific limit logic (case-insensitive)
-function getExtensionLimit(fileExtension: string, extensionLimits: Record<string, number>, globalLimit: number): number {
-    if (!fileExtension) {
-        return globalLimit;
-    }
-    const lowerExtension = fileExtension.toLowerCase();
-    // Find extension in limits (case-insensitive)
-    for (const [ext, limit] of Object.entries(extensionLimits)) {
-        if (ext.toLowerCase() === lowerExtension) {
-            return limit;
-        }
-    }
-    return globalLimit;
-}
 
 
 describe("utils", () => {
@@ -245,45 +232,74 @@ describe("utils", () => {
     });
 
     describe("getExtensionLimit", () => {
-        it("should return extension-specific limit when it exists", () => {
+        it("should return extension-specific limit from object format", () => {
             const extensionLimits = { ".ts": 400, ".js": 300 };
             const globalLimit = 250;
             
-            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(400);
-            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(300);
+            expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(300);
         });
 
-        it("should return global limit when extension-specific limit doesn't exist", () => {
+        it("should return extension-specific limit from array format", () => {
+            const extensionLimits = [
+                { extension: ".ts", limit: 400 },
+                { extension: ".js", limit: 300 }
+            ];
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(300);
+        });
+
+        it("should return global limit when extension-specific limit doesn't exist (object)", () => {
             const extensionLimits = { ".ts": 400 };
             const globalLimit = 250;
             
-            expect(getExtensionLimit(".py", extensionLimits, globalLimit)).toBe(250);
-            expect(getExtensionLimit(".md", extensionLimits, globalLimit)).toBe(250);
+            expect(getExtensionLimit(extensionLimits, ".py", globalLimit)).toBe(250);
+        });
+
+        it("should return global limit when extension-specific limit doesn't exist (array)", () => {
+            const extensionLimits = [{ extension: ".ts", limit: 400 }];
+            const globalLimit = 250;
+            
+            expect(getExtensionLimit(extensionLimits, ".py", globalLimit)).toBe(250);
         });
 
         it("should return global limit when extension is empty", () => {
             const extensionLimits = { ".ts": 400 };
             const globalLimit = 250;
             
-            expect(getExtensionLimit("", extensionLimits, globalLimit)).toBe(250);
+            expect(getExtensionLimit(extensionLimits, "", globalLimit)).toBe(250);
         });
 
-        it("should be case-insensitive for extension matching", () => {
+        it("should be case-insensitive for extension matching (object)", () => {
             const extensionLimits = { ".ts": 400, ".JS": 350 };
             const globalLimit = 250;
             
-            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(400);
-            expect(getExtensionLimit(".TS", extensionLimits, globalLimit)).toBe(400);
-            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(350);
-            expect(getExtensionLimit(".Js", extensionLimits, globalLimit)).toBe(350);
+            expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".TS", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(350);
+            expect(getExtensionLimit(extensionLimits, ".Js", globalLimit)).toBe(350);
         });
 
-        it("should handle empty extension limits object", () => {
-            const extensionLimits = {};
-            const globalLimit = 300;
+        it("should be case-insensitive for extension matching (array)", () => {
+            const extensionLimits = [
+                { extension: ".ts", limit: 400 },
+                { extension: ".JS", limit: 350 }
+            ];
+            const globalLimit = 250;
             
-            expect(getExtensionLimit(".ts", extensionLimits, globalLimit)).toBe(300);
-            expect(getExtensionLimit(".js", extensionLimits, globalLimit)).toBe(300);
+            expect(getExtensionLimit(extensionLimits, ".ts", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".TS", globalLimit)).toBe(400);
+            expect(getExtensionLimit(extensionLimits, ".js", globalLimit)).toBe(350);
+            expect(getExtensionLimit(extensionLimits, ".Js", globalLimit)).toBe(350);
+        });
+
+        it("should handle empty extension limits", () => {
+            expect(getExtensionLimit({}, ".ts", 300)).toBe(300);
+            expect(getExtensionLimit([], ".ts", 300)).toBe(300);
+            expect(getExtensionLimit(null, ".ts", 300)).toBe(300);
+            expect(getExtensionLimit(undefined, ".ts", 300)).toBe(300);
         });
     });
 });
