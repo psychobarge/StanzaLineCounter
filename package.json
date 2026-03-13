@@ -2,7 +2,7 @@
   "name": "stanza-line-counter",
   "displayName": "StanzaLineCounter",
   "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "publisher": "Psychobarge",
   "repository": {
     "type": "git",
@@ -69,38 +69,80 @@
             "type": "string"
           },
           "default": [
-            ".log",
-            ".min.js",
-            ".map",
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".gif",
-            ".webp",
-            ".svg",
-            ".ico",
-            ".bmp",
-            ".tiff",
-            ".tif",
-            ".avif",
-            ".heic",
-            ".woff",
-            ".woff2",
-            ".ttf",
-            ".otf",
-            ".eot",
-            ".pdf",
-            ".zip",
-            ".gz",
-            ".tar",
-            ".rar",
             ".7z",
+            ".aac",
+            ".ai",
+            ".avif",
+            ".avi",
+            ".bin",
+            ".bmp",
+            ".class",
+            ".db",
+            ".dll",
+            ".dmg",
+            ".doc",
+            ".docx",
+            ".dylib",
+            ".eot",
+            ".eps",
+            ".exe",
+            ".fig",
+            ".flac",
+            ".flv",
+            ".gif",
+            ".gz",
+            ".heic",
+            ".ico",
+            ".iso",
+            ".jpeg",
+            ".jpg",
+            ".js.map",
+            ".js.map",
+            ".key",
+            ".log",
+            ".m4a",
+            ".markdown",
+            ".md",
+            ".min.js",
+            ".mkv",
+            ".mov",
             ".mp3",
             ".mp4",
-            ".webm",
-            ".wav",
+            ".o",
+            ".obj",
+            ".odp",
+            ".ods",
+            ".odt",
             ".ogg",
-            ".bin"
+            ".otf",
+            ".pages",
+            ".pdf",
+            ".pkg",
+            ".png",
+            ".ppt",
+            ".pptx",
+            ".psd",
+            ".pyc",
+            ".rar",
+            ".rpm",
+            ".sketch",
+            ".so",
+            ".sqlitedb",
+            ".sqlite",
+            ".sqlite3",
+            ".svg",
+            ".tar",
+            ".tif",
+            ".tiff",
+            ".ttf",
+            ".wav",
+            ".webm",
+            ".webp",
+            ".woff",
+            ".woff2",
+            ".xls",
+            ".xlsx",
+            ".zip"
           ],
           "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map', images, fonts, archives, media files)."
         },
@@ -137,24 +179,52 @@
         "lineCounter.showFolderBadges": {
           "type": "boolean",
           "default": true,
-          "description": "If enabled, folders containing files that exceed the line limit will display a warning badge. If 'Global Warmup' is not enabled, folder badges will only load when the files inside are opened."
+          "description": "If enabled, folders containing files that exceed the line limit will display a warning badge. Badges are computed at startup; use 'Auto Refresh Workspace' to keep them up to date after configuration changes."
         },
-        "lineCounter.enableWorkspaceWarmUp": {
+        "lineCounter.autoRefreshWorkspace": {
           "type": "boolean",
-          "default": false,
-          "description": "If enabled, the extension will proactively scan the workspace at startup to display badges on folders. If disabled (default for performance), badges will only appear on folders once their contents are loaded in the Explorer."
+          "default": true,
+          "description": "If enabled, the workspace will be re-scanned automatically after changes to ignore lists or extension limits to keep folder badges up to date. If disabled, folder badges will only update at startup or via manual warm-up."
         },
         "lineCounter.extensionLimits": {
-          "type": "object",
-          "patternProperties": {
-            "^\\..+$": {
-              "type": "number",
-              "minimum": 1,
-              "description": "Line limit for this specific file extension"
+          "oneOf": [
+            {
+              "type": "object",
+              "patternProperties": {
+                "^\\..+$": {
+                  "type": "number",
+                  "minimum": 1,
+                  "description": "Line limit for this specific file extension"
+                }
+              },
+              "description": "Extension-specific line count limits as an object. Example: {\".ts\": 400, \".js\": 300}"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "extension": {
+                    "type": "string",
+                    "pattern": "^\\..+$",
+                    "description": "The file extension (e.g., '.ts')"
+                  },
+                  "limit": {
+                    "type": "number",
+                    "minimum": 1,
+                    "description": "The line count limit"
+                  }
+                },
+                "required": [
+                  "extension",
+                  "limit"
+                ]
+              },
+              "description": "Extension-specific line count limits as an array. Example: [{\"extension\": \".ts\", \"limit\": 400}]"
             }
-          },
+          ],
           "default": {},
-          "description": "Extension-specific line count limits. Example: {\".ts\": 400, \".js\": 300}. Files with these extensions will use their specific limits instead of the global limit."
+          "description": "Extension-specific line count limits. Supports both object format {\".ts\": 400} and array format [{\"extension\": \".ts\", \"limit\": 400}]. Files with these extensions will use their specific limits instead of the global limit."
         }
       }
     },
@@ -164,8 +234,16 @@
         "title": "Stanza : Ignore extension"
       },
       {
+        "command": "lineCounter.removeExtensionFromIgnoreList",
+        "title": "Stanza : Remove extension from ignore list"
+      },
+      {
         "command": "lineCounter.addToIgnoreList",
         "title": "Stanza : Ignore file/folder"
+      },
+      {
+        "command": "lineCounter.removeFromIgnoreList",
+        "title": "Stanza : Remove file/folder from ignore list"
       },
       {
         "command": "lineCounter.warmUp",
@@ -180,12 +258,23 @@
       "explorer/context": [
         {
           "command": "lineCounter.addToIgnoreList",
-          "group": "modification"
+          "group": "modification",
+          "when": "!(resourceFilename in lineCounter.excludeFolderNamesContext) && !(resourcePath in lineCounter.excludeFolderPathsContext)"
+        },
+        {
+          "command": "lineCounter.removeFromIgnoreList",
+          "group": "modification",
+          "when": "(resourceFilename in lineCounter.excludeFolderNamesContext) || (resourcePath in lineCounter.excludeFolderPathsContext)"
         },
         {
           "command": "lineCounter.addExtensionToIgnoreList",
           "group": "modification",
-          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname not in config.lineCounter.excludeExtensions"
+          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname not in lineCounter.excludeExtensionsContext"
+        },
+        {
+          "command": "lineCounter.removeExtensionFromIgnoreList",
+          "group": "modification",
+          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname in lineCounter.excludeExtensionsContext"
         },
         {
           "command": "lineCounter.warmUp",

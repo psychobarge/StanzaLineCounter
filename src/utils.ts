@@ -91,10 +91,59 @@ export function countLinesStream(fsPath: string): Promise<number> {
  * Extracts the extension used by lineCounter.excludeExtensions.
  */
 export function getPathExtension(fsPath: string): string {
-    return fsPath.includes(".")
-        ? fsPath.substring(fsPath.lastIndexOf("."))
-        : "";
+    const lastDot = fsPath.lastIndexOf(".");
+    if (lastDot === -1) {
+        return "";
+    }
+    // Handle cases where the dot might be in a directory name (though less common in this context)
+    const lastSep = Math.max(fsPath.lastIndexOf("/"), fsPath.lastIndexOf("\\"));
+    if (lastSep > lastDot) {
+        return "";
+    }
+    return fsPath.substring(lastDot);
 }
+
+/**
+ * Robustly retrieves the extension limit from configuration, supporting both object and array formats.
+ * Case-insensitive for extension matching.
+ */
+export function getExtensionLimit(
+    extensionLimits: unknown,
+    fileExtension: string,
+    globalLimit: number
+): number {
+    if (!fileExtension) {
+        return globalLimit;
+    }
+
+    const lowerExt = fileExtension.toLowerCase();
+
+    // Handle Array format: [{"extension": ".ts", "limit": 400}]
+    if (Array.isArray(extensionLimits)) {
+        for (const entry of extensionLimits) {
+            if (
+                entry &&
+                typeof entry === "object" &&
+                typeof entry.extension === "string" &&
+                entry.extension.toLowerCase() === lowerExt &&
+                typeof entry.limit === "number"
+            ) {
+                return entry.limit;
+            }
+        }
+    }
+    // Handle Object format: {".ts": 400}
+    else if (extensionLimits && typeof extensionLimits === "object") {
+        for (const [ext, limit] of Object.entries(extensionLimits as Record<string, unknown>)) {
+            if (ext.toLowerCase() === lowerExt && typeof limit === "number") {
+                return limit;
+            }
+        }
+    }
+
+    return globalLimit;
+}
+
 /**
  * Checks if a file path should be excluded based on folder names or extensions.
  */

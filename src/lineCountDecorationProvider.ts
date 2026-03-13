@@ -7,6 +7,7 @@ import {
     isTooLarge,
     getDecorationSpec,
     getPathExtension,
+    getExtensionLimit,
 } from "./utils";
 
 
@@ -86,15 +87,15 @@ export class LineCountDecorationProvider
             "env",
             ".env",
         ]);
-        const extensionLimits: Record<string, number> = config.get("extensionLimits", {});
+        const extensionLimits: unknown = config.get("extensionLimits", {});
         const globalLimit: number = config.get("limit", 300);
         const limitColor: string = config.get("limitColor", "editorInfo.foreground");
         const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
         const useSmileys: boolean = config.get("useSmileys", false);
 
         // Get extension-specific limit or use global limit
-        const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
-        const limit = fileExtension && extensionLimits[fileExtension] ? extensionLimits[fileExtension] : globalLimit;
+        const fileExtension = getPathExtension(uri.fsPath);
+        const limit = getExtensionLimit(extensionLimits, fileExtension, globalLimit);
 
         // Check for exclusions (folders or extensions)
         if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
@@ -189,16 +190,20 @@ export class LineCountDecorationProvider
         this.exceededFiles.clear();
         this._onDidChangeFileDecorations.fire(undefined);
         // Trigger a new warm-up
-        this.warmUpWorkspace();
+        this.warmUpWorkspace("config-change");
     }
 
     /** Proactively scan the workspace to find files exceeding the limit. */
-    async warmUpWorkspace(force: boolean = false): Promise<void> {
+    async warmUpWorkspace(
+        trigger: "startup" | "config-change" | "manual" = "startup"
+    ): Promise<void> {
         const config = vscode.workspace.getConfiguration("lineCounter");
 
-        const enableWorkspaceWarmUp: boolean = config.get("enableWorkspaceWarmUp", false);
-        if (!enableWorkspaceWarmUp && !force) {
-            return;
+        if (trigger === "config-change") {
+            const autoRefreshWorkspace: boolean = config.get("autoRefreshWorkspace", true);
+            if (!autoRefreshWorkspace) {
+                return;
+            }
         }
 
         const showFolderBadges: boolean = config.get("showFolderBadges", true);
@@ -206,7 +211,7 @@ export class LineCountDecorationProvider
             return;
         }
 
-        const extensionLimits: Record<string, number> = config.get("extensionLimits", {});
+        const extensionLimits: unknown = config.get("extensionLimits", {});
         const globalLimit: number = config.get("limit", 300);
         const maxFileSizeMB: number = config.get("maxFileSizeMB", 10);
         const excludeExtensions: string[] = config.get("excludeExtensions", []);
@@ -266,8 +271,8 @@ export class LineCountDecorationProvider
                         this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
 
                         // Get extension-specific limit for this file
-                        const fileExtension = getPathExtension(uri.fsPath).toLowerCase();
-                        const fileLimit = fileExtension && extensionLimits[fileExtension] ? extensionLimits[fileExtension] : globalLimit;
+                        const fileExtension = getPathExtension(uri.fsPath);
+                        const fileLimit = getExtensionLimit(extensionLimits, fileExtension, globalLimit);
 
                         if (lineCount > fileLimit) {
                             // Update exceeded status directly to avoid unnecessary re-reads

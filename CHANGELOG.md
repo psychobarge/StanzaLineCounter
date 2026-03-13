@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-03-13
+
+### Added
+- **Feature: Default ignore list**: Expanded default exclude list with many more extensions (archives, media, documents, binaries, fonts, etc.: `.7z`, `.mp4`, `.pdf`, `.docx`, `.pyc`, `.so`, `.woff2`, `.xlsx`, etc.).
+- **Feature: Remove from ignore list**: Explorer context menu entries to remove an extension or a file/folder from the ignore list (`Stanza : Remove extension from ignore list`, `Stanza : Remove file/folder from ignore list`). Menu entries are shown conditionally depending on whether the resource is already ignored.
+- **Configuration**: `lineCounter.extensionLimits` now supports both object format `{".ts": 400}` and array format `[{"extension": ".ts", "limit": 400}]`.
+- **Configuration**: Added `lineCounter.autoRefreshWorkspace` (default: `true`) to control automatic workspace re-scan after ignore list or extension limit changes.
+
+### Modified
+- **Fix: getPathExtension**: Correctly handles paths where the dot is in a directory name (no extension when the last dot is before the last path separator).
+- **Refactor: getExtensionLimit**: Moved to `utils.ts` and supports both object and array config formats with case-insensitive extension matching.
+- **UX**: Context-aware Explorer context menu: "Add to ignore" and "Remove from ignore" (for extensions and files/folders) are shown based on current ignore state.
+- **Behavior**: Workspace warm-up is triggered with a full refresh after ignore list changes.
+- **Behavior**: Startup warm-up now always runs once when the extension starts; post-change re-scan is now controlled by `lineCounter.autoRefreshWorkspace`.
+- **Code quality**: Replaced remaining `any` usages in warm-up and extension limit flows with explicit types/guards to satisfy ESLint (`no-explicit-any`) without changing behavior.
+- **Breaking**: Removed `lineCounter.enableWorkspaceWarmUp`; workspace warm-up now always runs at startup.
+
 ## [0.7.2] - 2026-03-12
 
 ### Fixed
