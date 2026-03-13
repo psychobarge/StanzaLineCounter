@@ -53,7 +53,7 @@ const mockState = vi.hoisted(() => {
         },
         getWorkspaceRoot() {
             return workspaceRoot;
-        }
+        },
     };
 });
 
@@ -71,18 +71,20 @@ vi.mock("./lineCountDecorationProvider", () => {
 vi.mock("vscode", () => {
     return {
         ConfigurationTarget: {
-            Global: "Global"
+            Global: "Global",
         },
         commands: {
-            registerCommand: vi.fn((command: string, callback: (uri: { scheme: string; fsPath: string }) => Promise<void> | void) => {
-                mockState.commandHandlers.set(command, callback);
-                return { dispose: vi.fn() };
-            }),
-            executeCommand: mockState.executeCommand
+            registerCommand: vi.fn(
+                (command: string, callback: (uri: { scheme: string; fsPath: string }) => Promise<void> | void) => {
+                    mockState.commandHandlers.set(command, callback);
+                    return { dispose: vi.fn() };
+                },
+            ),
+            executeCommand: mockState.executeCommand,
         },
         window: {
             registerFileDecorationProvider: mockState.registerFileDecorationProvider,
-            showInformationMessage: mockState.showInformationMessage
+            showInformationMessage: mockState.showInformationMessage,
         },
         workspace: {
             getConfiguration: vi.fn(() => ({
@@ -95,7 +97,7 @@ vi.mock("vscode", () => {
                     }
                     return fallback;
                 },
-                update: mockState.update
+                update: mockState.update,
             })),
             getWorkspaceFolder: vi.fn(() => {
                 const root = mockState.getWorkspaceRoot();
@@ -107,10 +109,10 @@ vi.mock("vscode", () => {
                 onDidCreate: vi.fn(() => ({ dispose: vi.fn() })),
                 onDidDelete: vi.fn(() => ({ dispose: vi.fn() })),
                 onDidChange: vi.fn(() => ({ dispose: vi.fn() })),
-                dispose: vi.fn()
+                dispose: vi.fn(),
             })),
-            workspaceFolders: [{ uri: { fsPath: "/workspace" } }]
-        }
+            workspaceFolders: [{ uri: { fsPath: "/workspace" } }],
+        },
     };
 });
 
@@ -130,14 +132,10 @@ describe("extension commands", () => {
 
         await command?.({ scheme: "file", fsPath: "/workspace/src/file.ts" });
 
-        expect(mockState.update).toHaveBeenCalledWith(
-            "excludeExtensions",
-            [".log"],
-            "Global"
-        );
+        expect(mockState.update).toHaveBeenCalledWith("excludeExtensions", [".log"], "Global");
         expect(mockState.refreshAll).toHaveBeenCalledOnce();
         expect(mockState.showInformationMessage).toHaveBeenCalledWith(
-            "Removed '.ts' from Stanza extension ignore list."
+            "Removed '.ts' from Stanza extension ignore list.",
         );
     });
 
@@ -149,9 +147,7 @@ describe("extension commands", () => {
 
         expect(mockState.update).not.toHaveBeenCalled();
         expect(mockState.refreshAll).not.toHaveBeenCalled();
-        expect(mockState.showInformationMessage).toHaveBeenCalledWith(
-            "'.ts' is not in the extension ignore list."
-        );
+        expect(mockState.showInformationMessage).toHaveBeenCalledWith("'.ts' is not in the extension ignore list.");
     });
 
     it("removes an ignored relative path with mixed separators and casing", async () => {
@@ -161,14 +157,10 @@ describe("extension commands", () => {
         const command = mockState.commandHandlers.get("lineCounter.removeFromIgnoreList");
         await command?.({ scheme: "file", fsPath: "/workspace/src/folder/file.ts" });
 
-        expect(mockState.update).toHaveBeenCalledWith(
-            "excludeFolders",
-            ["node_modules"],
-            "Global"
-        );
+        expect(mockState.update).toHaveBeenCalledWith("excludeFolders", ["node_modules"], "Global");
         expect(mockState.refreshAll).toHaveBeenCalledOnce();
         expect(mockState.showInformationMessage).toHaveBeenCalledWith(
-            "Removed 'Src\\Folder\\File.ts' from Stanza ignore list."
+            "Removed 'Src\\Folder\\File.ts' from Stanza ignore list.",
         );
     });
 
@@ -181,8 +173,6 @@ describe("extension commands", () => {
 
         expect(mockState.update).not.toHaveBeenCalled();
         expect(mockState.refreshAll).not.toHaveBeenCalled();
-        expect(mockState.showInformationMessage).toHaveBeenCalledWith(
-            "'src/file.ts' is not in the ignore list."
-        );
+        expect(mockState.showInformationMessage).toHaveBeenCalledWith("'src/file.ts' is not in the ignore list.");
     });
 });

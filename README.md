@@ -23,31 +23,33 @@ This extension was developed with the assistance of an AI coding tool. That said
 - **Customizable threshold** — Set your own line limit threshold per file extension.
 - **Ignore extensions** — Customize which file extensions are excluded from line count calculations.
 - **Ignore files/folders** — Customize which files or folders are excluded from line count calculations.
-- **Easy exclusion** — Easily exclude extension, files or folders directly from the Explorer via right-click > 
-   - **Stanza: Ignore extension**
-   - **Stanza: Ignore file/folder**
+- **Easy exclusion** — Easily exclude extension, files or folders directly from the Explorer via right-click >
+    - **Stanza: Ignore extension**
+    - **Stanza: Ignore file/folder**
 - **Easy inclusion** - Easily include previousy excluded extension, file or folders directly from the Exmplorer via right-click >
-   - **Stanza: Remove extension from ignore list**
-   - **Stanza: Remove file/folder from ignore list**
+    - **Stanza: Remove extension from ignore list**
+    - **Stanza: Remove file/folder from ignore list**
 - **Live refresh** — Badges update automatically on file changes or configuration updates.
 - **Performance optimizations** — Streaming, caching, and background workspace scanning to ensure a smooth UI.
 
 ## Badge format
 
-| Lines       | Badge | Example        |
-|-------------|-------|----------------|
-| 0–99        | As-is | `42`           |
-| 100–999     | `Xc`  | `3c` (≈ 300)   |
-| 1,000–9,999 | `Xk`  | `1k`           |
-| 10,000+     | `∞`   | `∞`            |
+| Lines       | Badge | Example      |
+| ----------- | ----- | ------------ |
+| 0–99        | As-is | `42`         |
+| 100–999     | `Xc`  | `3c` (≈ 300) |
+| 1,000–9,999 | `Xk`  | `1k`         |
+| 10,000+     | `∞`   | `∞`          |
 
 The exact line count is always shown in the tooltip on hover.
 
 ## Requirements
+
 Any IDE based on VS Code:
-- [VS Code](https://code.visualstudio.com/) 
+
+- [VS Code](https://code.visualstudio.com/)
 - [Cursor](https://cursor.sh/)
-- [Antigravity](https://antigravity.google/) 
+- [Antigravity](https://antigravity.google/)
 - [Windsurf](https://windsurf.com/editor)
 - [Trae](https://www.trae.ai/)
 - Others not tested but it should work on all VS Code based IDEs
@@ -58,20 +60,21 @@ This extension is available on the VS Code Marketplace and Open VSX Marketplace.
 
 ## Configuration
 
-| Setting                          | Type     | Default                       | Description                                                                 |
-|----------------------------------|----------|-------------------------------|-----------------------------------------------------------------------------|
-| `lineCounter.limit`              | number   | `300`                         | Line threshold — files above this show a warning badge.                     |
-| `lineCounter.limitColor`         | string   | `editorInfo.foreground`      | The color used for files exceeding the limit.      |
-| `lineCounter.maxFileSizeMB`      | number   | `10`                          | Maximum file size (MB) to ignore to preserve memory.            |
-| `lineCounter.excludeExtensions`  | string[] | `[...]`                      | File extensions to exclude from counting. |
-| `lineCounter.excludeFolders`     | string[] | `[...]`                      | Folders or specific paths to exclude (e.g. `node_modules`, `src/gen.ts`). |
-| `lineCounter.useSmileys`          | boolean  | `false`                       | Use emojis instead of numbers (😎 below 90%, 😬 near limit, 😡 exceeded).                      |
-| `lineCounter.showFolderBadges`    | boolean  | `true`                        | Display warning tags on folders containing exceeded files. Badges are computed at startup. |
-| `lineCounter.autoRefreshWorkspace` | boolean  | `true`                        | Re-scan workspace automatically after ignore list or extension limit changes to keep folder badges up to date. |
+| Setting                            | Type     | Default                 | Description                                                                                                    |
+| ---------------------------------- | -------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `lineCounter.limit`                | number   | `300`                   | Line threshold — files above this show a warning badge.                                                        |
+| `lineCounter.limitColor`           | string   | `editorInfo.foreground` | The color used for files exceeding the limit.                                                                  |
+| `lineCounter.maxFileSizeMB`        | number   | `10`                    | Maximum file size (MB) to ignore to preserve memory.                                                           |
+| `lineCounter.excludeExtensions`    | string[] | `[...]`                 | File extensions to exclude from counting.                                                                      |
+| `lineCounter.excludeFolders`       | string[] | `[...]`                 | Folders or specific paths to exclude (e.g. `node_modules`, `src/gen.ts`).                                      |
+| `lineCounter.useSmileys`           | boolean  | `false`                 | Use emojis instead of numbers (😎 below 90%, 😬 near limit, 😡 exceeded).                                      |
+| `lineCounter.showFolderBadges`     | boolean  | `true`                  | Display warning tags on folders containing exceeded files. Badges are computed at startup.                     |
+| `lineCounter.autoRefreshWorkspace` | boolean  | `true`                  | Re-scan workspace automatically after ignore list or extension limit changes to keep folder badges up to date. |
 
 ## Performance
 
 StanzaLineCounter is designed to be lightweight even on large projects:
+
 - **Streaming**: For local files, we use Node streams to count lines without loading the whole file into RAM.
 - **Intelligent Caching**: Results are cached and only re-calculated if the file modification time changes.
 - **Startup warmup + optional auto-refresh**: A workspace scan always runs at startup, and can re-run after configuration changes (`lineCounter.autoRefreshWorkspace`) while staying non-blocking.

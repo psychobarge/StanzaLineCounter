@@ -10,16 +10,13 @@ import {
     getExtensionLimit,
 } from "./utils";
 
-
 interface CacheEntry {
     lineCount: number;
     mtimeMs: number;
 }
 
-export class LineCountDecorationProvider
-    implements vscode.FileDecorationProvider {
-    private readonly _onDidChangeFileDecorations =
-        new vscode.EventEmitter<vscode.Uri | vscode.Uri[] | undefined>();
+export class LineCountDecorationProvider implements vscode.FileDecorationProvider {
+    private readonly _onDidChangeFileDecorations = new vscode.EventEmitter<vscode.Uri | vscode.Uri[] | undefined>();
     readonly onDidChangeFileDecorations = this._onDidChangeFileDecorations.event;
 
     /** Cache: fsPath → { lineCount, mtimeMs } */
@@ -30,9 +27,7 @@ export class LineCountDecorationProvider
 
     // ─── Public API ─────────────────────────────────────────────
 
-    async provideFileDecoration(
-        uri: vscode.Uri
-    ): Promise<vscode.FileDecoration | undefined> {
+    async provideFileDecoration(uri: vscode.Uri): Promise<vscode.FileDecoration | undefined> {
         // Read user settings
         const config = vscode.workspace.getConfiguration("lineCounter");
         const showFolderBadges: boolean = config.get("showFolderBadges", true);
@@ -62,7 +57,7 @@ export class LineCountDecorationProvider
                     return new vscode.FileDecoration(
                         "⚠",
                         "Contains files exceeding line limit",
-                        new vscode.ThemeColor(limitColor)
+                        new vscode.ThemeColor(limitColor),
                     );
                 }
             }
@@ -194,9 +189,7 @@ export class LineCountDecorationProvider
     }
 
     /** Proactively scan the workspace to find files exceeding the limit. */
-    async warmUpWorkspace(
-        trigger: "startup" | "config-change" | "manual" = "startup"
-    ): Promise<void> {
+    async warmUpWorkspace(trigger: "startup" | "config-change" | "manual" = "startup"): Promise<void> {
         const config = vscode.workspace.getConfiguration("lineCounter");
 
         if (trigger === "config-change") {
@@ -239,68 +232,74 @@ export class LineCountDecorationProvider
             for (let i = 0; i < files.length; i += chunkSize) {
                 const chunk = files.slice(i, i + chunkSize);
 
-                await Promise.all(chunk.map(async (uri) => {
-                    // Re-check detailed exclusions
-                    if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
-                        return;
-                    }
-
-                    try {
-                        const stat = await vscode.workspace.fs.stat(uri);
-                        if (isTooLarge(stat.size, maxFileSizeMB)) {
+                await Promise.all(
+                    chunk.map(async (uri) => {
+                        // Re-check detailed exclusions
+                        if (shouldExcludePath(uri.fsPath, excludeFolders, excludeExtensions)) {
                             return;
                         }
 
-                        let lineCount: number;
-                        if (uri.scheme === "file") {
-                            lineCount = await countLinesStream(uri.fsPath);
-                        } else {
-                            const content = await vscode.workspace.fs.readFile(uri);
-                            lineCount = countLines(content);
-                        }
-
-                        // Cache management: limit to 1000
-                        if (this.cache.size >= 1000) {
-                            const firstKey = this.cache.keys().next().value;
-                            if (firstKey) {
-                                this.cache.delete(firstKey);
+                        try {
+                            const stat = await vscode.workspace.fs.stat(uri);
+                            if (isTooLarge(stat.size, maxFileSizeMB)) {
+                                return;
                             }
-                        }
 
-                        // Seed cache
-                        this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
+                            let lineCount: number;
+                            if (uri.scheme === "file") {
+                                lineCount = await countLinesStream(uri.fsPath);
+                            } else {
+                                const content = await vscode.workspace.fs.readFile(uri);
+                                lineCount = countLines(content);
+                            }
 
-                        // Get extension-specific limit for this file
-                        const fileExtension = getPathExtension(uri.fsPath);
-                        const fileLimit = getExtensionLimit(extensionLimits, fileExtension, globalLimit);
-
-                        if (lineCount > fileLimit) {
-                            // Update exceeded status directly to avoid unnecessary re-reads
-                            const fsPath = uri.fsPath;
-                            if (!this.exceededFiles.has(fsPath)) {
-                                this.exceededFiles.add(fsPath);
-
-                                // Refresh all parent directories
-                                let parentPath = path.dirname(fsPath);
-                                const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-                                const rootPath = workspaceFolder ? workspaceFolder.uri.fsPath : undefined;
-
-                                while (parentPath && parentPath !== rootPath && parentPath !== path.dirname(parentPath)) {
-                                    this._onDidChangeFileDecorations.fire(vscode.Uri.file(parentPath));
-                                    parentPath = path.dirname(parentPath);
-                                }
-                                if (rootPath) {
-                                    this._onDidChangeFileDecorations.fire(vscode.Uri.file(rootPath));
+                            // Cache management: limit to 1000
+                            if (this.cache.size >= 1000) {
+                                const firstKey = this.cache.keys().next().value;
+                                if (firstKey) {
+                                    this.cache.delete(firstKey);
                                 }
                             }
+
+                            // Seed cache
+                            this.cache.set(uri.fsPath, { lineCount, mtimeMs: stat.mtime });
+
+                            // Get extension-specific limit for this file
+                            const fileExtension = getPathExtension(uri.fsPath);
+                            const fileLimit = getExtensionLimit(extensionLimits, fileExtension, globalLimit);
+
+                            if (lineCount > fileLimit) {
+                                // Update exceeded status directly to avoid unnecessary re-reads
+                                const fsPath = uri.fsPath;
+                                if (!this.exceededFiles.has(fsPath)) {
+                                    this.exceededFiles.add(fsPath);
+
+                                    // Refresh all parent directories
+                                    let parentPath = path.dirname(fsPath);
+                                    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+                                    const rootPath = workspaceFolder ? workspaceFolder.uri.fsPath : undefined;
+
+                                    while (
+                                        parentPath &&
+                                        parentPath !== rootPath &&
+                                        parentPath !== path.dirname(parentPath)
+                                    ) {
+                                        this._onDidChangeFileDecorations.fire(vscode.Uri.file(parentPath));
+                                        parentPath = path.dirname(parentPath);
+                                    }
+                                    if (rootPath) {
+                                        this._onDidChangeFileDecorations.fire(vscode.Uri.file(rootPath));
+                                    }
+                                }
+                            }
+                        } catch {
+                            // Ignore errors reading individual files during warmup
                         }
-                    } catch {
-                        // Ignore errors reading individual files during warmup
-                    }
-                }));
+                    }),
+                );
 
                 // Yield to event loop
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise((resolve) => setTimeout(resolve, 10));
             }
         } catch (error) {
             console.error("StanzaLineCounter: Error during workspace warmup", error);
@@ -317,14 +316,11 @@ export class LineCountDecorationProvider
         lineCount: number,
         limit: number,
         limitColor: string,
-        useSmileys: boolean
+        useSmileys: boolean,
     ): vscode.FileDecoration {
         const spec = getDecorationSpec(lineCount, limit, useSmileys);
-        const color = spec.useLimitColor
-            ? new vscode.ThemeColor(limitColor)
-            : undefined;
+        const color = spec.useLimitColor ? new vscode.ThemeColor(limitColor) : undefined;
 
         return new vscode.FileDecoration(spec.badge, spec.tooltip, color);
     }
 }
-

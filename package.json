@@ -1,310 +1,313 @@
 {
-  "name": "stanza-line-counter",
-  "displayName": "StanzaLineCounter",
-  "description": "Displays the number of lines for each file directly in the Explorer panel.",
-  "version": "0.8.0",
-  "publisher": "Psychobarge",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/psychobarge/StanzaLineCounter"
-  },
-  "license": "MIT",
-  "engines": {
-    "vscode": "^1.74.0"
-  },
-  "categories": [
-    "Data Science",
-    "Visualization"
-  ],
-  "icon": "images/stanza_logo.png",
-  "galleryBanner": {
-    "color": "#e8eef4",
-    "theme": "light"
-  },
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "configuration": {
-      "title": "StanzaLineCounter",
-      "properties": {
-        "lineCounter.limit": {
-          "type": "number",
-          "default": 300,
-          "description": "Line count threshold. Files exceeding this limit will have their badge displayed with a warning color."
-        },
-        "lineCounter.limitColor": {
-          "type": "string",
-          "default": "editorInfo.foreground",
-          "enum": [
-            "editorInfo.foreground",
-            "errorForeground",
-            "charts.red",
-            "charts.orange",
-            "charts.yellow",
-            "charts.green",
-            "charts.blue",
-            "charts.purple",
-            "foreground",
-            "descriptionForeground"
-          ],
-          "enumDescriptions": [
-            "Default Blue (Info)",
-            "Error Red",
-            "Red",
-            "Orange",
-            "Yellow",
-            "Green",
-            "Blue",
-            "Purple",
-            "Default Text Foreground",
-            "Subtle Gray (Description)"
-          ],
-          "description": "The color used for files exceeding the line limit. Select a theme color from the dropdown."
-        },
-        "lineCounter.excludeExtensions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            ".7z",
-            ".aac",
-            ".ai",
-            ".avif",
-            ".avi",
-            ".bin",
-            ".bmp",
-            ".class",
-            ".db",
-            ".dll",
-            ".dmg",
-            ".doc",
-            ".docx",
-            ".dylib",
-            ".eot",
-            ".eps",
-            ".exe",
-            ".fig",
-            ".flac",
-            ".flv",
-            ".gif",
-            ".gz",
-            ".heic",
-            ".ico",
-            ".iso",
-            ".jpeg",
-            ".jpg",
-            ".js.map",
-            ".js.map",
-            ".key",
-            ".log",
-            ".m4a",
-            ".markdown",
-            ".md",
-            ".min.js",
-            ".mkv",
-            ".mov",
-            ".mp3",
-            ".mp4",
-            ".o",
-            ".obj",
-            ".odp",
-            ".ods",
-            ".odt",
-            ".ogg",
-            ".otf",
-            ".pages",
-            ".pdf",
-            ".pkg",
-            ".png",
-            ".ppt",
-            ".pptx",
-            ".psd",
-            ".pyc",
-            ".rar",
-            ".rpm",
-            ".sketch",
-            ".so",
-            ".sqlitedb",
-            ".sqlite",
-            ".sqlite3",
-            ".svg",
-            ".tar",
-            ".tif",
-            ".tiff",
-            ".ttf",
-            ".wav",
-            ".webm",
-            ".webp",
-            ".woff",
-            ".woff2",
-            ".xls",
-            ".xlsx",
-            ".zip"
-          ],
-          "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map', images, fonts, archives, media files)."
-        },
-        "lineCounter.excludeFolders": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "node_modules",
-            ".git",
-            "vendor",
-            "dist",
-            "out",
-            "target",
-            "bin",
-            ".venv",
-            "venv",
-            "env",
-            ".env"
-          ],
-          "description": "List of folder names, file names, or relative paths to exclude from line counting (e.g. 'node_modules', '.git', 'src/generated.ts')."
-        },
-        "lineCounter.maxFileSizeMB": {
-          "type": "number",
-          "default": 10,
-          "description": "Maximum file size in MB. Files larger than this will be skipped to prevent performance issues."
-        },
-        "lineCounter.useSmileys": {
-          "type": "boolean",
-          "default": false,
-          "description": "If enabled, replaces the line count badge with a smiley based on the limit threshold (😎 for low, 😬 for near limit, 😡 for exceeded)."
-        },
-        "lineCounter.showFolderBadges": {
-          "type": "boolean",
-          "default": true,
-          "description": "If enabled, folders containing files that exceed the line limit will display a warning badge. Badges are computed at startup; use 'Auto Refresh Workspace' to keep them up to date after configuration changes."
-        },
-        "lineCounter.autoRefreshWorkspace": {
-          "type": "boolean",
-          "default": true,
-          "description": "If enabled, the workspace will be re-scanned automatically after changes to ignore lists or extension limits to keep folder badges up to date. If disabled, folder badges will only update at startup or via manual warm-up."
-        },
-        "lineCounter.extensionLimits": {
-          "oneOf": [
-            {
-              "type": "object",
-              "patternProperties": {
-                "^\\..+$": {
-                  "type": "number",
-                  "minimum": 1,
-                  "description": "Line limit for this specific file extension"
+    "name": "stanza-line-counter",
+    "displayName": "StanzaLineCounter",
+    "description": "Displays the number of lines for each file directly in the Explorer panel.",
+    "version": "0.8.0",
+    "publisher": "Psychobarge",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/psychobarge/StanzaLineCounter"
+    },
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Data Science",
+        "Visualization"
+    ],
+    "icon": "images/stanza_logo.png",
+    "galleryBanner": {
+        "color": "#e8eef4",
+        "theme": "light"
+    },
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "StanzaLineCounter",
+            "properties": {
+                "lineCounter.limit": {
+                    "type": "number",
+                    "default": 300,
+                    "description": "Line count threshold. Files exceeding this limit will have their badge displayed with a warning color."
+                },
+                "lineCounter.limitColor": {
+                    "type": "string",
+                    "default": "editorInfo.foreground",
+                    "enum": [
+                        "editorInfo.foreground",
+                        "errorForeground",
+                        "charts.red",
+                        "charts.orange",
+                        "charts.yellow",
+                        "charts.green",
+                        "charts.blue",
+                        "charts.purple",
+                        "foreground",
+                        "descriptionForeground"
+                    ],
+                    "enumDescriptions": [
+                        "Default Blue (Info)",
+                        "Error Red",
+                        "Red",
+                        "Orange",
+                        "Yellow",
+                        "Green",
+                        "Blue",
+                        "Purple",
+                        "Default Text Foreground",
+                        "Subtle Gray (Description)"
+                    ],
+                    "description": "The color used for files exceeding the line limit. Select a theme color from the dropdown."
+                },
+                "lineCounter.excludeExtensions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".7z",
+                        ".aac",
+                        ".ai",
+                        ".avif",
+                        ".avi",
+                        ".bin",
+                        ".bmp",
+                        ".class",
+                        ".db",
+                        ".dll",
+                        ".dmg",
+                        ".doc",
+                        ".docx",
+                        ".dylib",
+                        ".eot",
+                        ".eps",
+                        ".exe",
+                        ".fig",
+                        ".flac",
+                        ".flv",
+                        ".gif",
+                        ".gz",
+                        ".heic",
+                        ".ico",
+                        ".iso",
+                        ".jpeg",
+                        ".jpg",
+                        ".js.map",
+                        ".js.map",
+                        ".key",
+                        ".log",
+                        ".m4a",
+                        ".markdown",
+                        ".md",
+                        ".min.js",
+                        ".mkv",
+                        ".mov",
+                        ".mp3",
+                        ".mp4",
+                        ".o",
+                        ".obj",
+                        ".odp",
+                        ".ods",
+                        ".odt",
+                        ".ogg",
+                        ".otf",
+                        ".pages",
+                        ".pdf",
+                        ".pkg",
+                        ".png",
+                        ".ppt",
+                        ".pptx",
+                        ".psd",
+                        ".pyc",
+                        ".rar",
+                        ".rpm",
+                        ".sketch",
+                        ".so",
+                        ".sqlitedb",
+                        ".sqlite",
+                        ".sqlite3",
+                        ".svg",
+                        ".tar",
+                        ".tif",
+                        ".tiff",
+                        ".ttf",
+                        ".wav",
+                        ".webm",
+                        ".webp",
+                        ".woff",
+                        ".woff2",
+                        ".xls",
+                        ".xlsx",
+                        ".zip"
+                    ],
+                    "description": "List of file extensions to exclude from line counting (e.g. '.log', '.min.js', '.map', images, fonts, archives, media files)."
+                },
+                "lineCounter.excludeFolders": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "node_modules",
+                        ".git",
+                        "vendor",
+                        "dist",
+                        "out",
+                        "target",
+                        "bin",
+                        ".venv",
+                        "venv",
+                        "env",
+                        ".env"
+                    ],
+                    "description": "List of folder names, file names, or relative paths to exclude from line counting (e.g. 'node_modules', '.git', 'src/generated.ts')."
+                },
+                "lineCounter.maxFileSizeMB": {
+                    "type": "number",
+                    "default": 10,
+                    "description": "Maximum file size in MB. Files larger than this will be skipped to prevent performance issues."
+                },
+                "lineCounter.useSmileys": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If enabled, replaces the line count badge with a smiley based on the limit threshold (😎 for low, 😬 for near limit, 😡 for exceeded)."
+                },
+                "lineCounter.showFolderBadges": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If enabled, folders containing files that exceed the line limit will display a warning badge. Badges are computed at startup; use 'Auto Refresh Workspace' to keep them up to date after configuration changes."
+                },
+                "lineCounter.autoRefreshWorkspace": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If enabled, the workspace will be re-scanned automatically after changes to ignore lists or extension limits to keep folder badges up to date. If disabled, folder badges will only update at startup or via manual warm-up."
+                },
+                "lineCounter.extensionLimits": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "patternProperties": {
+                                "^\\..+$": {
+                                    "type": "number",
+                                    "minimum": 1,
+                                    "description": "Line limit for this specific file extension"
+                                }
+                            },
+                            "description": "Extension-specific line count limits as an object. Example: {\".ts\": 400, \".js\": 300}"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "extension": {
+                                        "type": "string",
+                                        "pattern": "^\\..+$",
+                                        "description": "The file extension (e.g., '.ts')"
+                                    },
+                                    "limit": {
+                                        "type": "number",
+                                        "minimum": 1,
+                                        "description": "The line count limit"
+                                    }
+                                },
+                                "required": [
+                                    "extension",
+                                    "limit"
+                                ]
+                            },
+                            "description": "Extension-specific line count limits as an array. Example: [{\"extension\": \".ts\", \"limit\": 400}]"
+                        }
+                    ],
+                    "default": {},
+                    "description": "Extension-specific line count limits. Supports both object format {\".ts\": 400} and array format [{\"extension\": \".ts\", \"limit\": 400}]. Files with these extensions will use their specific limits instead of the global limit."
                 }
-              },
-              "description": "Extension-specific line count limits as an object. Example: {\".ts\": 400, \".js\": 300}"
+            }
+        },
+        "commands": [
+            {
+                "command": "lineCounter.addExtensionToIgnoreList",
+                "title": "Stanza : Ignore extension"
             },
             {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "extension": {
-                    "type": "string",
-                    "pattern": "^\\..+$",
-                    "description": "The file extension (e.g., '.ts')"
-                  },
-                  "limit": {
-                    "type": "number",
-                    "minimum": 1,
-                    "description": "The line count limit"
-                  }
-                },
-                "required": [
-                  "extension",
-                  "limit"
-                ]
-              },
-              "description": "Extension-specific line count limits as an array. Example: [{\"extension\": \".ts\", \"limit\": 400}]"
+                "command": "lineCounter.removeExtensionFromIgnoreList",
+                "title": "Stanza : Remove extension from ignore list"
+            },
+            {
+                "command": "lineCounter.addToIgnoreList",
+                "title": "Stanza : Ignore file/folder"
+            },
+            {
+                "command": "lineCounter.removeFromIgnoreList",
+                "title": "Stanza : Remove file/folder from ignore list"
+            },
+            {
+                "command": "lineCounter.warmUp",
+                "title": "Stanza : Warm up workspace"
+            },
+            {
+                "command": "lineCounter.setExtensionLimit",
+                "title": "Stanza : Set line limit for this extension"
             }
-          ],
-          "default": {},
-          "description": "Extension-specific line count limits. Supports both object format {\".ts\": 400} and array format [{\"extension\": \".ts\", \"limit\": 400}]. Files with these extensions will use their specific limits instead of the global limit."
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "lineCounter.addToIgnoreList",
+                    "group": "modification",
+                    "when": "!(resourceFilename in lineCounter.excludeFolderNamesContext) && !(resourcePath in lineCounter.excludeFolderPathsContext)"
+                },
+                {
+                    "command": "lineCounter.removeFromIgnoreList",
+                    "group": "modification",
+                    "when": "(resourceFilename in lineCounter.excludeFolderNamesContext) || (resourcePath in lineCounter.excludeFolderPathsContext)"
+                },
+                {
+                    "command": "lineCounter.addExtensionToIgnoreList",
+                    "group": "modification",
+                    "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname not in lineCounter.excludeExtensionsContext"
+                },
+                {
+                    "command": "lineCounter.removeExtensionFromIgnoreList",
+                    "group": "modification",
+                    "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname in lineCounter.excludeExtensionsContext"
+                },
+                {
+                    "command": "lineCounter.warmUp",
+                    "group": "modification"
+                },
+                {
+                    "command": "lineCounter.setExtensionLimit",
+                    "group": "modification",
+                    "when": "explorerResourceIsFolder == false && resourceExtname != ''"
+                }
+            ]
         }
-      }
     },
-    "commands": [
-      {
-        "command": "lineCounter.addExtensionToIgnoreList",
-        "title": "Stanza : Ignore extension"
-      },
-      {
-        "command": "lineCounter.removeExtensionFromIgnoreList",
-        "title": "Stanza : Remove extension from ignore list"
-      },
-      {
-        "command": "lineCounter.addToIgnoreList",
-        "title": "Stanza : Ignore file/folder"
-      },
-      {
-        "command": "lineCounter.removeFromIgnoreList",
-        "title": "Stanza : Remove file/folder from ignore list"
-      },
-      {
-        "command": "lineCounter.warmUp",
-        "title": "Stanza : Warm up workspace"
-      },
-      {
-        "command": "lineCounter.setExtensionLimit",
-        "title": "Stanza : Set line limit for this extension"
-      }
-    ],
-    "menus": {
-      "explorer/context": [
-        {
-          "command": "lineCounter.addToIgnoreList",
-          "group": "modification",
-          "when": "!(resourceFilename in lineCounter.excludeFolderNamesContext) && !(resourcePath in lineCounter.excludeFolderPathsContext)"
-        },
-        {
-          "command": "lineCounter.removeFromIgnoreList",
-          "group": "modification",
-          "when": "(resourceFilename in lineCounter.excludeFolderNamesContext) || (resourcePath in lineCounter.excludeFolderPathsContext)"
-        },
-        {
-          "command": "lineCounter.addExtensionToIgnoreList",
-          "group": "modification",
-          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname not in lineCounter.excludeExtensionsContext"
-        },
-        {
-          "command": "lineCounter.removeExtensionFromIgnoreList",
-          "group": "modification",
-          "when": "explorerResourceIsFolder == false && resourceExtname != '' && resourceExtname in lineCounter.excludeExtensionsContext"
-        },
-        {
-          "command": "lineCounter.warmUp",
-          "group": "modification"
-        },
-        {
-          "command": "lineCounter.setExtensionLimit",
-          "group": "modification",
-          "when": "explorerResourceIsFolder == false && resourceExtname != ''"
-        }
-      ]
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint src",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^20.19.37",
+        "@types/vscode": "^1.74.0",
+        "@vitest/coverage-v8": "^4.0.18",
+        "eslint": "^10.0.2",
+        "prettier": "^3.8.1",
+        "typescript": "^5.3.0",
+        "typescript-eslint": "^8.56.1",
+        "vitest": "^4.0.18"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "lint": "eslint src",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^20.19.37",
-    "@types/vscode": "^1.74.0",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.2",
-    "typescript": "^5.3.0",
-    "typescript-eslint": "^8.56.1",
-    "vitest": "^4.0.18"
-  }
 }

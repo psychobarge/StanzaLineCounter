@@ -12,7 +12,19 @@ const mockState = vi.hoisted(() => {
 
     const defaults = {
         showFolderBadges: true,
-        excludeFolders: ["node_modules", ".git", "vendor", "dist", "out", "target", "bin", ".venv", "venv", "env", ".env"],
+        excludeFolders: [
+            "node_modules",
+            ".git",
+            "vendor",
+            "dist",
+            "out",
+            "target",
+            "bin",
+            ".venv",
+            "venv",
+            "env",
+            ".env",
+        ],
         excludeExtensions: [] as string[],
         extensionLimits: {},
         limit: 300,
@@ -167,13 +179,19 @@ describe("LineCountDecorationProvider", () => {
         utilsMock.countLinesStream.mockReset().mockResolvedValue(10);
         utilsMock.shouldExcludePath.mockReset().mockReturnValue(false);
         utilsMock.isTooLarge.mockReset().mockReturnValue(false);
-        utilsMock.getDecorationSpec.mockReset().mockImplementation((lineCount: number, limit: number, useSmileys: boolean) => ({
-            badge: useSmileys ? "😎" : String(lineCount),
-            tooltip: `${lineCount} lines`,
-            useLimitColor: lineCount > limit,
-        }));
-        utilsMock.getPathExtension.mockReset().mockImplementation((fsPath: string) => (fsPath.endsWith(".ts") ? ".ts" : ""));
-        utilsMock.getExtensionLimit.mockReset().mockImplementation((_limits: unknown, _ext: string, globalLimit: number) => globalLimit);
+        utilsMock.getDecorationSpec
+            .mockReset()
+            .mockImplementation((lineCount: number, limit: number, useSmileys: boolean) => ({
+                badge: useSmileys ? "😎" : String(lineCount),
+                tooltip: `${lineCount} lines`,
+                useLimitColor: lineCount > limit,
+            }));
+        utilsMock.getPathExtension
+            .mockReset()
+            .mockImplementation((fsPath: string) => (fsPath.endsWith(".ts") ? ".ts" : ""));
+        utilsMock.getExtensionLimit
+            .mockReset()
+            .mockImplementation((_limits: unknown, _ext: string, globalLimit: number) => globalLimit);
     });
 
     it("returns file decoration for a regular file using stream counting", async () => {
