@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **fix: Bug**: Bug that prevented ignored folders to behave as espected.
+- **fix: Bug**: Bug that prevented ignored folders to behave as expected.
 
 ## [0.7.1] - 2026-03-11
 

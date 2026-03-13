@@ -2,3 +2,12 @@ out/
 node_modules/
 *.vsix
 coverage/
+
+# Sensitive files
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
+*.cert
