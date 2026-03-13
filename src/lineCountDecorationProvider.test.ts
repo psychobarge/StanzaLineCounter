@@ -199,7 +199,7 @@ describe("LineCountDecorationProvider", () => {
         mockState.setStat("/workspace/src/file.ts", { type: mockState.FileType.File, size: 128, mtime: 1 });
         utilsMock.countLinesStream.mockResolvedValue(42);
 
-        const decoration = await provider.provideFileDecoration(makeUri("/workspace/src/file.ts"));
+        const decoration = await provider.provideFileDecoration(makeUri("/workspace/src/file.ts") as never);
 
         expect(decoration).toBeDefined();
         expect(utilsMock.countLinesStream).toHaveBeenCalledWith("/workspace/src/file.ts");
@@ -263,7 +263,9 @@ describe("LineCountDecorationProvider", () => {
         mockState.setFileContent("/workspace/src/virtual.ts", "a\nb\n");
         utilsMock.countLines.mockReturnValue(2);
 
-        const decoration = await provider.provideFileDecoration(makeUri("/workspace/src/virtual.ts", "vscode-remote"));
+        const decoration = await provider.provideFileDecoration(
+            makeUri("/workspace/src/virtual.ts", "vscode-remote") as never,
+        );
 
         expect(decoration).toBeDefined();
         expect(utilsMock.countLinesStream).not.toHaveBeenCalled();
