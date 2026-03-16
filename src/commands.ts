@@ -1,6 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { getExtensionLimit, getPathExtension } from "./utils";
+import { generateReport } from "./reportGenerator";
 
 interface ExtensionLimitEntry {
     extension: string;
@@ -281,6 +282,13 @@ export function registerCommands(
 
             // Refresh decorations to apply the new limit
             provider.refreshAll();
+        }),
+    );
+
+    // Register the generateReport command
+    context.subscriptions.push(
+        vscode.commands.registerCommand("lineCounter.generateReport", () => {
+            void generateReport();
         }),
     );
 }
