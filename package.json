@@ -2,7 +2,7 @@
     "name": "stanza-line-counter",
     "displayName": "StanzaLineCounter",
     "description": "Displays the number of lines for each file directly in the Explorer panel.",
-    "version": "0.8.1",
+    "version": "0.9.0",
     "publisher": "Psychobarge",
     "repository": {
         "type": "git",
@@ -251,6 +251,10 @@
             {
                 "command": "lineCounter.setExtensionLimit",
                 "title": "Stanza : Set line limit for this extension"
+            },
+            {
+                "command": "lineCounter.generateReport",
+                "title": "Stanza : Generate report"
             }
         ],
         "menus": {
@@ -283,6 +287,10 @@
                     "command": "lineCounter.setExtensionLimit",
                     "group": "modification",
                     "when": "explorerResourceIsFolder == false && resourceExtname != ''"
+                },
+                {
+                    "command": "lineCounter.generateReport",
+                    "group": "modification"
                 }
             ]
         }
