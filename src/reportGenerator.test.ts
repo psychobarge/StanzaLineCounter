@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockState = vi.hoisted(() => {
@@ -7,13 +8,15 @@ const mockState = vi.hoisted(() => {
     const showErrorMessage = vi.fn();
     const showTextDocument = vi.fn();
     const openTextDocument = vi.fn(() => ({}));
-    const findFiles = vi.fn(async () => []);
+    const findFiles = vi.fn(async (): Promise<vscode.Uri[]> => []);
     const withProgress = vi.fn(async (options: unknown, task: (progress: unknown, token: unknown) => Promise<void>) => {
         return await task({ isCancellationRequested: false }, { isCancellationRequested: false });
     });
-    const stat = vi.fn(async () => ({ size: 100 }));
-    const readFile = vi.fn(async () => new Uint8Array([]));
-    const writeFile = vi.fn(async () => {});
+    const stat = vi.fn(
+        async (_uri: vscode.Uri): Promise<vscode.FileStat> => ({ size: 100, type: 1, ctime: 0, mtime: 0 }),
+    );
+    const readFile = vi.fn(async (): Promise<Uint8Array> => new Uint8Array([]));
+    const writeFile = vi.fn(async (_uri: unknown, _content: Uint8Array): Promise<void> => {});
     const asRelativePath = vi.fn((uri: vscode.Uri) => uri.fsPath.replace("/workspace/", ""));
 
     let config: Record<string, unknown> = {
@@ -55,7 +58,7 @@ const mockState = vi.hoisted(() => {
                         joinPath: vi.fn((base, ...paths) => ({ fsPath: base.fsPath + "/" + paths.join("/") })),
                     },
                 },
-            ];
+            ] as unknown as vscode.WorkspaceFolder[];
             showErrorMessage.mockReset();
             showTextDocument.mockReset();
             openTextDocument.mockReset();
@@ -142,7 +145,7 @@ describe("generateReport", () => {
         await generateReport();
         expect(mockState.writeFile).toHaveBeenCalled();
         const call = vi.mocked(mockState.writeFile).mock.calls[0];
-        const content = call[1].toString("utf8");
+        const content = new TextDecoder("utf-8").decode(call[1] as Uint8Array);
         expect(content).toContain("✅ OK Files**: 0");
         expect(content).toContain("⚠️ Almost KO Files**: 0");
         expect(content).toContain("❌ KO Files**: 0");
@@ -173,7 +176,7 @@ describe("generateReport", () => {
         await generateReport();
 
         expect(mockState.writeFile).toHaveBeenCalled();
-        const content = vi.mocked(mockState.writeFile).mock.calls[0][1].toString();
+        const content = new TextDecoder("utf-8").decode(vi.mocked(mockState.writeFile).mock.calls[0][1] as Uint8Array);
 
         expect(content).toContain("✅ OK Files**: 1");
         expect(content).toContain("⚠️ Almost KO Files**: 1");
@@ -192,12 +195,11 @@ describe("generateReport", () => {
 
         vi.mocked(utils.shouldExcludePath).mockImplementation((fsPath: string) => fsPath.includes("excluded"));
         vi.mocked(utils.isTooLarge).mockImplementation((size: number) => size > 1000);
-        mockState.stat.mockImplementation(async (uri: unknown) => {
-            const vscodeUri = uri as vscode.Uri;
-            if (vscodeUri.fsPath.includes("toolarge")) {
-                return { size: 2000 } as vscode.FileStat;
+        mockState.stat.mockImplementation(async (uri: vscode.Uri): Promise<vscode.FileStat> => {
+            if (uri.fsPath.includes("toolarge")) {
+                return { size: 2000, type: 1, ctime: 0, mtime: 0 };
             }
-            return { size: 100 } as vscode.FileStat;
+            return { size: 100, type: 1, ctime: 0, mtime: 0 };
         });
 
         vi.mocked(utils.countLinesStream).mockResolvedValue(100);
